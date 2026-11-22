@@ -2,12 +2,28 @@
   "use strict";
 
   const campaigns = window.CAMPAIGNS || [];
-  // A normal visit starts at the covers, even when mobile Safari restores an old scroll.
+  // Old cover links left the chosen chapter in the address. Opening that same
+  // address again must show the covers, rather than reopen the last chapter.
+  const chapterHashes = new Set(campaigns.map(world => `#dossier-${world.id}`));
+  function clearChapterLink() {
+    const openingUrl = new URL(location.href);
+    const staleChapter = chapterHashes.has(openingUrl.hash) || (openingUrl.hash === "#dossier" && openingUrl.searchParams.has("world"));
+    if (!openingUrl.searchParams.has("world") && !staleChapter) return false;
+    openingUrl.searchParams.delete("world");
+    if (staleChapter) openingUrl.hash = "";
+    try { history.replaceState(null, "", openingUrl.href); } catch { /* Some file viewers restrict history. */ }
+    return true;
+  }
+  clearChapterLink();
+  // Mobile browsers may restore their scroll after pageshow or media loading.
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
   let interacted = false;
-  for (const type of ["pointerdown", "touchstart", "wheel", "keydown"]) window.addEventListener(type, () => { interacted = true; }, { once:true, passive:true });
+  for (const type of ["pointerdown", "touchstart", "wheel", "keydown"]) window.addEventListener(type, () => { interacted = true; }, { passive:true });
   const restoreOpening = () => { if (!interacted && (!location.hash || location.hash === "#main" || location.hash === "#worlds")) window.scrollTo({top:0,left:0,behavior:"instant"}); };
-  window.addEventListener("pageshow", event => { if (event.persisted) interacted = false; restoreOpening(); });
+  const settleOpening = () => { restoreOpening(); requestAnimationFrame(() => requestAnimationFrame(restoreOpening)); };
+  window.addEventListener("pageshow", event => { if (event.persisted) interacted = false; settleOpening(); });
+  window.addEventListener("load", settleOpening, {once:true});
+  window.addEventListener("hashchange", () => { if (clearChapterLink()) { interacted = false; settleOpening(); } });
   restoreOpening();
   const storageKey = "za-granyu-draft-v1";
   const byId = (id) => document.getElementById(id);
@@ -40,7 +56,6 @@
   try {
     const saved = JSON.parse(localStorage.getItem(storageKey));
     if (saved && typeof saved === "object") {
-      if (campaigns.some((world) => world.id === saved.active)) state.active = saved.active;
       if (saved.choices && typeof saved.choices === "object" && !Array.isArray(saved.choices)) state.choices = saved.choices;
       if (saved.form && typeof saved.form === "object" && !Array.isArray(saved.form)) state.form = saved.form;
     }
@@ -64,9 +79,6 @@
     }
   }
 
-  const requestedWorld = new URL(location.href).searchParams.get("world");
-  if (campaigns.some((world) => world.id === requestedWorld)) state.active = requestedWorld;
-
   function save() {
     try {
       localStorage.setItem(storageKey, JSON.stringify(state));
@@ -87,7 +99,7 @@
   function renderWorlds() {
     byId("world-list").innerHTML = campaigns.map((world) => `
       <article class="world" data-setting="${escape(world.id)}">
-        <a href="?world=${escape(world.id)}#dossier-${escape(world.id)}" class="world-open" data-world="${escape(world.id)}" aria-current="${world.id === state.active}">
+        <a href="#dossier-${escape(world.id)}" class="world-open" data-world="${escape(world.id)}" aria-current="${world.id === state.active}">
           <div class="world-image"><img src="${escape(world.cover)}" alt="${escape(world.coverAlt)}" width="${Number(world.coverWidth) || 1200}" height="${Number(world.coverHeight) || 800}" fetchpriority="${world.id === campaigns[0].id ? "high" : "auto"}"></div>
           <div class="world-caption">
             <h2 class="world-title"><span>${escape(world.title)}</span></h2>
@@ -566,10 +578,6 @@
       state.active = control.dataset.world;
       document.querySelectorAll(".world-open").forEach(link => link.setAttribute("aria-current",String(link.dataset.world === state.active)));
       save();
-      const url = new URL(location.href);
-      url.searchParams.set("world", state.active);
-      if (control.tagName === "A") url.hash = `dossier-${state.active}`;
-      try { history.replaceState(null, "", url.href); } catch { /* Some file viewers restrict history. */ }
       if (control.tagName === "A") byId(`dossier-${state.active}`).scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
     });
   });
@@ -577,6 +585,4 @@
   observeEntrances(document);
   requestAnimationFrame(restoreOpening);
   document.fonts.ready.then(restoreOpening);
-  const deepLinkedChapter = byId(location.hash === "#dossier" && requestedWorld ? `dossier-${state.active}` : location.hash.slice(1));
-  if (deepLinkedChapter?.classList.contains("setting-page")) requestAnimationFrame(() => deepLinkedChapter.scrollIntoView({behavior:"instant"}));
 })();
