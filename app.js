@@ -27,6 +27,9 @@
     }
   } catch { storageAvailable = false; }
 
+  // Preserve existing bureau selections after correcting Control to Contain.
+  if (state.choices.anomalies?.bureau === "control") state.choices.anomalies.bureau = "contain";
+
   const requestedWorld = new URL(location.href).searchParams.get("world");
   if (campaigns.some((world) => world.id === requestedWorld)) state.active = requestedWorld;
 
