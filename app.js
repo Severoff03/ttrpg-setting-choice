@@ -173,7 +173,10 @@
     const world = campaigns.find((item) => item.id === state.active);
     if (!world) return;
     const bureauChoice = world.choices.find(choice => choice.id === "bureau");
-    const otherChoices = world.choices.filter(choice => choice.id !== "bureau");
+    const worldChoices = world.choices.filter(choice => choice.placement === "world");
+    const cityChoices = world.choices.filter(choice => choice.placement === "city");
+    const storyChoices = world.choices.filter(choice => choice.placement === "story");
+    const otherChoices = world.choices.filter(choice => choice.id !== "bureau" && !["world", "city", "story"].includes(choice.placement));
     const poster = world.backgroundPoster || { src: world.cover, alt: world.coverAlt, credit: world.credit, url: world.creditUrl };
     const content = byId("dossier-content");
     content.dataset.setting = world.id;
@@ -192,8 +195,9 @@
       <div class="dossier-chapters">
         <div class="dossier-reading">
           <div class="world-copy">
-            <section class="dossier-block world-description"><h3>О мире</h3>${world.premise.map((text) => `<p>${escape(text)}</p>`).join("")}${world.bureaus ? `<dl class="bureau-list">${world.bureaus.map(bureau => `<div><dt>${escape(bureau.title)}</dt><dd>${escape(bureau.description)}</dd></div>`).join("")}</dl>` : ""}${bureauChoice ? `<div class="bureau-inline">${renderChoice(world, bureauChoice)}</div>` : ""}</section>
-            <section class="dossier-block story-chapter"><h3>Ваша история</h3><p>${escape(world.story || "—")}</p></section>
+            <section class="dossier-block world-description"><h3>О мире</h3>${world.premise.map((text) => `<p>${escape(text)}</p>`).join("")}${worldChoices.map(choice => renderChoice(world, choice)).join("")}${world.bureaus ? `<dl class="bureau-list">${world.bureaus.map(bureau => `<div><dt>${escape(bureau.title)}</dt><dd>${escape(bureau.description)}</dd></div>`).join("")}</dl>` : ""}${bureauChoice ? `<div class="bureau-inline">${renderChoice(world, bureauChoice)}</div>` : ""}</section>
+            ${cityChoices.length ? `<section class="dossier-block city-chapter" aria-label="Выбор города">${cityChoices.map(choice => renderChoice(world, choice)).join("")}</section>` : ""}
+            <section class="dossier-block story-chapter"><h3>Ваша история</h3>${world.story || !storyChoices.length ? `<p>${escape(world.story || "—")}</p>` : ""}${storyChoices.map(choice => renderChoice(world, choice)).join("")}</section>
             ${otherChoices.length ? `<section class="preferences" aria-label="Пожелания к миру"><h3>Настроим под нас</h3><p>Можно выбрать сейчас или обсудить вместе.</p>${otherChoices.map((choice) => renderChoice(world, choice)).join("")}</section>` : ""}
           </div>
           ${world.atmosphereArt?.length ? `<div class="chapter-gallery" aria-label="Иллюстрации мира">${world.atmosphereArt.map(art => renderAtmosphereArt(art)).join("")}</div>` : ""}
