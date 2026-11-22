@@ -23,6 +23,7 @@ window.CAMPAIGNS.push({
   ],
   story: "Вы будете командой одного из трёх бюро SCP Foundation. В каком именно отделе начнётся ваша история, выберем вместе.",
   choices: [
+    { id: "tone", type: "scale", label: "Классический SCP или Inside Job?", minLabel: "Классический SCP", maxLabel: "Inside Job", placement: "story" },
     { id: "bureau", label: "В каком бюро хотите играть?", options: [
       { value: "security", label: "Бюро безопасности", note: "Вооружённые вылазки на неизведанные и опасные территории." },
       { value: "contain", label: "Бюро содержания", note: "Изоляция, сохранность и подробное изучение SCP." },
@@ -37,6 +38,7 @@ window.CAMPAIGNS.push({
     linkLabel: "Открыть Daggerheart",
   },
   references: [
+    { title: "Inside Job · Корпорация «Заговор»", url: "https://www.youtube.com/watch?v=ZOzraPZTOjM", note: "Мультсериал о тайной организации, заговорах и абсурдных рабочих буднях." },
     { title: "SCP: OVERLORD", url: "https://www.youtube.com/watch?v=EOxarwd3eTs", note: "Игровой фильм: настоящие актёры, экипировка и работа оперативной группы Фонда." },
     { title: "SCP: Dollhouse", url: "https://www.youtube.com/watch?v=xVx2jyDPinw", note: "Приземлённая съёмка об оперативниках, входящих в обычный дом с аномалией." },
     { title: "Control", url: "https://www.remedygames.com/games/control", note: "Архитектура Бюро, аномальные предметы и ощущение сдвинувшейся реальности." },
@@ -46,18 +48,21 @@ window.CAMPAIGNS.push({
   // Пример картинки: { src: "settings/anomalies/images/hall.jpg", alt: "Описание", caption: "Подпись" }
   backgroundVideo: "settings/anomalies/videos/scp-field-montage.mp4",
   backgroundPoster: {
-    src: "settings/anomalies/images/scp-field-montage.webp",
-    alt: "Оперативники SCP выдвигаются через лес в фильме OVERLORD",
-    credit: "SCP: OVERLORD · Evan Royalty / Stephen Hancock · CC BY-SA 3.0",
-    url: "https://www.youtube.com/watch?v=EOxarwd3eTs",
+    src: "settings/anomalies/images/scp-selected-space.png",
+    alt: "Искажённое пространство и парящие фрагменты здания в Control",
+    credit: "Control · Remedy Entertainment",
+    url: "https://store.steampowered.com/app/870780/",
   },
   videoSources: [
     { title: "SCP: OVERLORD", url: "https://www.youtube.com/watch?v=EOxarwd3eTs" },
     { title: "SCP: Dollhouse", url: "https://www.youtube.com/watch?v=xVx2jyDPinw" },
   ],
   atmosphereArt: [
-    { src: "settings/anomalies/images/scp-team-entry.webp", width: 960, height: 402, alt: "Оперативная группа SCP проверяет помещение при входе в здание", credit: "SCP: OVERLORD · Evan Royalty / Stephen Hancock · CC BY-SA 3.0", url: "https://www.youtube.com/watch?v=EOxarwd3eTs" },
-    { src: "settings/anomalies/images/scp-agent-interior.webp", width: 960, height: 402, alt: "Оперативник Фонда в экипировке внутри здания", credit: "SCP: Dollhouse · Evan Royalty / Stephen Hancock · CC BY-SA 3.0", url: "https://www.youtube.com/watch?v=xVx2jyDPinw" },
+    { src: "settings/anomalies/images/scp-selected-floating.png", width: 600, height: 337, alt: "Парящие фигуры в аномальном пространстве Control, изображение выбранное ведущим", credit: "Control · Remedy Entertainment", url: "https://store.steampowered.com/app/870780/" },
+    { src: "settings/anomalies/images/scp-selected-space.png", width: 600, height: 337, alt: "Искажённое пространство Control, изображение выбранное ведущим", credit: "Control · Remedy Entertainment", url: "https://store.steampowered.com/app/870780/" },
+    { src: "settings/anomalies/images/scp-selected-creature.png", width: 1546, height: 987, alt: "Высокое существо с прямоугольной головой в туманном лесу, изображение предоставлено ведущим", credit: "Изображение ведущего · автор не установлен", url: "" },
+    { src: "settings/anomalies/images/control-creature.jpg", width: 1920, height: 1080, alt: "Нечеловеческое существо в тёмном помещении из Control", credit: "Control · Remedy Entertainment", url: "https://store.steampowered.com/app/870780/" },
+    { src: "settings/anomalies/images/control-hiss-entity.jpg", width: 1920, height: 1080, alt: "Красная парящая сущность среди обломков из Control", credit: "Control · Remedy Entertainment", url: "https://store.steampowered.com/app/870780/" },
   ],
   images: [],
   // Пример видео: { src: "settings/anomalies/videos/trailer.mp4", title: "Настроение игры", poster: "settings/anomalies/images/poster.jpg" }

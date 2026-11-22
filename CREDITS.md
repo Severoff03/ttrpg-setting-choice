@@ -5,7 +5,9 @@
 ## SCP Foundation
 
 - Обложка `user-scp-cover.png` предоставлена ведущим. Оригинальные подписи и водяные знаки сохранены; авторство и открытая лицензия не установлены.
-- Иллюстрации внутри страницы — кадры **SCP: OVERLORD** (12:36) и **SCP: Dollhouse** (04:40). Изменения: извлечение кадров и уменьшение до ширины 960 px, без обрезки. Авторство и лицензия CC BY-SA 3.0 указаны под изображениями.
+- Иллюстрации внутри страницы заменены на **Control**, Remedy Entertainment. [Официальная страница](https://www.remedygames.com/games/control), [официальные скриншоты Steam](https://store.steampowered.com/app/870780/). Кадры существ и аномальных пространств получены из официальных материалов магазина. Открытая лицензия на них не заявляется. Старые отдельные кадры OVERLORD и Dollhouse больше не подключены как иллюстрации; короткое фоновое видео остаётся.
+- `scp-selected-floating.png` и `scp-selected-space.png` — два выбранных ведущим кадра Control. `scp-selected-creature.png` — третье предоставленное изображение; его автор и произведение не установлены. Все три файла скопированы из вложений без изменений. В галерее сохраняются исходные пропорции, фоновые версии могут кадрироваться для композиции.
+- **Inside Job / Корпорация «Заговор»**, Netflix, автор сериала Shion Takeuchi. [Официальная страница](https://www.netflix.com/title/80995819). Ссылка на [русский трейлер](https://www.youtube.com/watch?v=ZOzraPZTOjM) предоставлена ведущим; публикация канала LandFM. Сам трейлер не скачивался и не перемонтировался.
 
 - Фоновая нарезка **SCP: OVERLORD / SCP: Dollhouse**, 24,5 секунды, девять коротких планов. Канал Evan Royalty, режиссёр Stephen Hancock. [OVERLORD](https://www.youtube.com/watch?v=EOxarwd3eTs), [Dollhouse](https://www.youtube.com/watch?v=xVx2jyDPinw). В описаниях авторов указана Creative Commons Attribution-ShareAlike 3.0. Изменения: монтаж отрывков без звука, размер 960×400, H.264, небольшая коррекция яркости и насыщенности, затемнение на границе петли. Использованы OVERLORD 03:38–03:41, 05:38–05:40,5, 09:36–09:39, 12:36–12:38,5, 18:38–18:41; Dollhouse 01:18–01:20,5, 04:38–04:40,5, 09:18–09:20,5, 12:38–12:41. Обложка извлечена из первого плана. Адаптированные материалы распространяются под [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/).
 - **SCP: Dollhouse** и тизер, Evan Royalty. [Фильм](https://www.youtube.com/watch?v=xVx2jyDPinw), [тизер](https://www.youtube.com/watch?v=t0fiJbA8UoI). В подборке сохранены превью и ссылки; на сайте размещены только короткие отрывки, исходный фильм в публичный репозиторий не включён.
@@ -33,5 +35,7 @@
 ## Шрифт
 
 **Onest**, Google Fonts. Сохранён локально; [исходный проект](https://github.com/google/fonts/tree/main/ofl/onest). Лицензия SIL Open Font License лежит в `assets/fonts/OFL.txt`.
+
+Заголовки по просьбе ведущего: **Roboto Condensed** для SCP, **PT Mono** для Wolf Among Us и **Cormorant Garamond** для Vampire. Шрифты с кириллицей загружены через Google Fonts и сохранены локально. Проекты и лицензии: [Roboto Condensed](https://github.com/google/fonts/tree/main/ofl/robotocondensed), [PT Mono](https://github.com/google/fonts/tree/main/ofl/ptmono), [Cormorant Garamond](https://github.com/google/fonts/tree/main/ofl/cormorantgaramond). Файлы лицензий лежат рядом со шрифтами в `assets/fonts/`.
 
 Превью YouTube получены с публичного сервера `i.ytimg.com` для соответствующих роликов. Скриншоты и иллюстрации из Steam получены из официальных ресурсов магазина. Кроме указанного SCP-фильма, отдельная открытая лицензия на перечисленные произведения не заявляется.

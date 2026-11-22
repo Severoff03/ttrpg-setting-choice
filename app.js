@@ -44,6 +44,10 @@
     if (!state.choices[world.id] || typeof state.choices[world.id] !== "object") continue;
     for (const choice of world.choices) {
       const saved = state.choices[world.id][choice.id];
+      if (choice.type === "scale") {
+        if (!/^(10|[1-9])$/.test(String(saved))) delete state.choices[world.id][choice.id];
+        continue;
+      }
       const values = Array.isArray(saved) ? saved : typeof saved === "string" ? [saved] : [];
       state.choices[world.id][choice.id] = [...new Set(values.map(value => world.id === "anomalies" && choice.id === "bureau" && value === "control" ? "contain" : value))].filter(value => choice.options.some(option => option.value === value));
     }
@@ -57,6 +61,7 @@
       localStorage.setItem(storageKey, JSON.stringify(state));
       storageAvailable = true;
     } catch { storageAvailable = false; }
+    byId("draft-status").classList.toggle("sr-only", storageAvailable);
     byId("draft-status").textContent = storageAvailable
       ? "Черновик сохранён на устройстве"
       : "Автосохранение недоступно. Скопируйте или скачайте ответ.";
@@ -71,12 +76,10 @@
   function renderWorlds() {
     byId("world-list").innerHTML = campaigns.map((world) => `
       <article class="world" data-setting="${escape(world.id)}">
-        <a href="?world=${escape(world.id)}#dossier" class="world-open" data-world="${escape(world.id)}" aria-current="${world.id === state.active}">
+        <a href="?world=${escape(world.id)}#dossier-${escape(world.id)}" class="world-open" data-world="${escape(world.id)}" aria-current="${world.id === state.active}">
           <div class="world-image"><img src="${escape(world.cover)}" alt="${escape(world.coverAlt)}" width="${Number(world.coverWidth) || 1200}" height="${Number(world.coverHeight) || 800}" fetchpriority="${world.id === campaigns[0].id ? "high" : "auto"}"></div>
           <div class="world-caption">
             <h2 class="world-title"><span>${escape(world.title)}</span></h2>
-            <p>${escape(world.cardText)}</p>
-            <span class="world-genre">${escape(world.genre)}</span>
           </div>
         </a>
       </article>`).join("");
@@ -84,7 +87,19 @@
 
   function selectedOptions(world, choice) {
     const values = state.choices[world.id]?.[choice.id] || [];
-    return choice.options.filter(option => values.includes(option.value));
+    return (choice.options || []).filter(option => values.includes(option.value));
+  }
+
+  function answered(world, choice) {
+    return choice.type === "scale" ? /^(10|[1-9])$/.test(String(state.choices[world.id]?.[choice.id])) : selectedOptions(world, choice).length > 0;
+  }
+
+  function answerLabel(world, choice) {
+    if (choice.type === "scale") {
+      const value = state.choices[world.id]?.[choice.id];
+      return answered(world, choice) ? `${value} / 10 (${choice.minLabel} → ${choice.maxLabel})` : "Обсудим вместе";
+    }
+    return selectedOptions(world, choice).map(option => option.label).join("; ") || "Обсудим вместе";
   }
 
   function choiceNote(selected) {
@@ -94,50 +109,68 @@
   }
 
   function renderChoice(world, choice, location = "dossier") {
+    if (choice.type === "scale") {
+      const value = state.choices[world.id]?.[choice.id];
+      const id = `pref-${world.id}-${choice.id}-${location}`;
+      return `<fieldset class="choice-group tone-choice" data-ui><legend><label for="${id}">${escape(choice.label)}</label></legend><div class="tone-endpoints"><span>${escape(choice.minLabel)}</span><output for="${id}" id="output-${id}">${answered(world, choice) ? value + " / 10" : "—"}</output><span>${escape(choice.maxLabel)}</span></div><input type="range" id="${id}" name="${id}" min="1" max="10" step="1" value="${answered(world, choice) ? value : 5}" data-rated="${answered(world, choice)}" data-preference="${escape(choice.id)}" data-campaign-id="${escape(world.id)}" aria-valuetext="${answered(world, choice) ? escape(answerLabel(world, choice)) : "Оценка не выбрана"}"><div class="scale-ticks" aria-hidden="true">${Array.from({length:10},(_,i)=>`<span>${i+1}</span>`).join("")}</div></fieldset>`;
+    }
     const selected = selectedOptions(world, choice);
     const noteId = `note-${world.id}-${choice.id}-${location}`;
-    return `<fieldset class="choice-group"><legend>${escape(choice.label)}</legend>
-      <p class="choice-help" id="help-${noteId}">Можно отметить несколько вариантов.</p>
+    return `<fieldset class="choice-group" data-ui><legend>${escape(choice.label)}</legend>
+      <p class="sr-only" id="help-${noteId}">Можно отметить несколько вариантов.</p>
       <div class="choice-options">${choice.options.map((option) => `
         <label class="choice-label"><input type="checkbox" name="pref-${escape(world.id)}-${escape(choice.id)}-${escape(location)}" value="${escape(option.value)}" data-preference="${escape(choice.id)}" data-campaign-id="${escape(world.id)}" data-note-id="${noteId}" aria-describedby="help-${noteId} ${noteId}" ${selected.some(item => item.value === option.value) ? "checked" : ""}><span>${escape(option.label)}</span></label>`).join("")}</div>
-      <p class="choice-note" id="${noteId}" aria-live="polite">${escape(choiceNote(selected))}</p>
+      <p class="sr-only" id="${noteId}" aria-live="polite">${escape(choiceNote(selected))}</p>
     </fieldset>`;
   }
 
   function bindPreferences(root) {
     root.querySelectorAll("input[data-preference]").forEach(input => {
-      input.addEventListener("change", () => {
+      const onAnswer = () => {
         const world = campaigns.find(item => item.id === input.dataset.campaignId);
         const choice = world?.choices.find(item => item.id === input.dataset.preference);
-        if (!choice || !choice.options.some(option => option.value === input.value)) return;
+        if (!choice) return;
         const editingReminder = input.closest("[data-reminder-world]");
         if (!state.choices[world.id] || typeof state.choices[world.id] !== "object") state.choices[world.id] = {};
-        const values = new Set(selectedOptions(world, choice).map(option => option.value));
-        if (input.checked) values.add(input.value); else values.delete(input.value);
-        state.choices[world.id][choice.id] = [...values];
+        if (choice.type === "scale") {
+          if (!/^(10|[1-9])$/.test(input.value)) return;
+          state.choices[world.id][choice.id] = input.value;
+        } else {
+          if (!choice.options.some(option => option.value === input.value)) return;
+          const values = new Set(selectedOptions(world, choice).map(option => option.value));
+          if (input.checked) values.add(input.value); else values.delete(input.value);
+          state.choices[world.id][choice.id] = [...values];
+        }
         document.querySelectorAll("input[data-preference]").forEach(control => {
           const campaign = campaigns.find(item => item.id === control.dataset.campaignId);
           const question = campaign?.choices.find(item => item.id === control.dataset.preference);
           if (!question) return;
-          const selected = selectedOptions(campaign, question);
-          control.checked = selected.some(option => control.value === option.value);
-          const note = byId(control.dataset.noteId);
-          if (note) note.textContent = choiceNote(selected);
+          if (question.type === "scale") {
+            control.dataset.rated = String(answered(campaign, question));
+            control.value = state.choices[campaign.id]?.[question.id] || 5;
+            control.setAttribute("aria-valuetext", answerLabel(campaign, question));
+            byId(`output-${control.id}`).textContent = answered(campaign, question) ? control.value + " / 10" : "—";
+          } else {
+            const selected = selectedOptions(campaign, question);
+            control.checked = selected.some(option => control.value === option.value);
+            const note = byId(control.dataset.noteId);
+            if (note) note.textContent = choiceNote(selected);
+          }
         });
-        // Keep lower questions in place while players mark multiple options.
-        // Answers made in a setting description immediately remove its duplicate.
         if (!editingReminder) renderUnansweredQuestions();
-        else editingReminder.querySelector(".confirm-reminder").disabled = ![...editingReminder.querySelectorAll("input[data-preference]")].some(control => control.checked);
+        else editingReminder.querySelector(".confirm-reminder").disabled = ![...editingReminder.querySelectorAll("input[data-preference]")].some(control => control.type === "range" ? control.dataset.rated === "true" : control.checked);
         invalidateExport();
         save();
-      });
+      };
+      input.addEventListener(input.type === "range" ? "input" : "change", onAnswer);
+      if (input.type === "range") input.addEventListener("pointerdown", onAnswer);
     });
   }
 
   function renderUnansweredQuestions() {
     const container = byId("question-reminders");
     const confirmation = byId("questions-confirmation");
-    const pending = campaigns.map(world => ({ world, choices: world.choices.filter(choice => !selectedOptions(world, choice).length) })).filter(group => group.choices.length);
+    const pending = campaigns.map(world => ({ world, choices: world.choices.filter(choice => !answered(world, choice)) })).filter(group => group.choices.length);
     container.hidden = pending.length === 0;
     confirmation.hidden = pending.length > 0;
     confirmation.textContent = pending.length ? "" : "Все вопросы о сеттингах заполнены.";
@@ -167,56 +200,62 @@
     </section>`;
   }
 
-  function renderDossier(animate = false) {
-    const world = campaigns.find((item) => item.id === state.active);
-    if (!world) return;
+  function renderDossier() {
+    const root = byId("dossier-content");
+    root.querySelectorAll(".setting-page").forEach(page => page._atmosphereCleanup?.());
+    root.querySelectorAll("*").forEach(element => entranceObserver?.unobserve(element));
+    root.replaceChildren();
+    for (const world of campaigns) renderWorldDossier(world, root);
+    renderUnansweredQuestions();
+  }
+
+  function renderWorldDossier(world, root) {
     const bureauChoice = world.choices.find(choice => choice.id === "bureau");
     const worldChoices = world.choices.filter(choice => choice.placement === "world");
     const cityChoices = world.choices.filter(choice => choice.placement === "city");
     const storyChoices = world.choices.filter(choice => choice.placement === "story");
     const otherChoices = world.choices.filter(choice => choice.id !== "bureau" && !["world", "city", "story"].includes(choice.placement));
+    const allArt = world.atmosphereArt || [];
+    const primaryArt = allArt.length ? [allArt[Math.min(2, allArt.length - 1)]] : [];
+    const additionalArt = allArt;
     const poster = world.backgroundPoster || { src: world.cover, alt: world.coverAlt, credit: world.credit, url: world.creditUrl };
-    const content = byId("dossier-content");
+    const content = document.createElement("article");
+    content.className = "setting-page";
+    content.id = `dossier-${world.id}`;
     content.dataset.setting = world.id;
-    content._atmosphereCleanup?.();
-    content._atmosphereCleanup = null;
-    content.querySelectorAll("video").forEach(video => video.pause());
-    content.querySelectorAll("*").forEach(element => entranceObserver?.unobserve(element));
-    content.classList.remove("dossier-refresh");
+    content.setAttribute("aria-labelledby", `title-${world.id}`);
+    root.append(content);
     content.innerHTML = `
-      <div class="dossier-title-row"><h2>${escape(world.title)}</h2><span>${escape(world.genre)}</span></div>
       <div class="dossier-visual">
         <img class="dossier-art" src="${escape(poster.src)}" alt="${escape(poster.alt)}" width="1200" height="480" loading="lazy">
         ${world.backgroundVideo ? `<video class="atmosphere-video" loop muted playsinline preload="none" poster="${escape(poster.src)}" aria-hidden="true" tabindex="-1"><source src="${escape(world.backgroundVideo)}" type="video/mp4"></video><button type="button" class="video-toggle" aria-pressed="false">Включить атмосферу</button>` : ""}
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="dossier-title-row wrap"><h2 id="title-${world.id}">${escape(world.title)}</h2>${world.id === "anomalies" ? `<div class="redaction-marks" aria-hidden="true"><span>СЛУЖЕБНАЯ ИНФОРМАЦИЯ</span><span>ДОСТУП ОГРАНИЧЕН</span></div>` : ""}${world.id === "vampire" ? `<div class="blood-drips" aria-hidden="true"><i></i><i></i><i></i><i></i></div>` : ""}</div>
       </div>
+      <div class="setting-body wrap">
       <p class="art-caption">${externalLink(poster.url, poster.credit || "Материалы для обсуждения")}${world.videoSources?.length ? ` · Видео: ${world.videoSources.map(source => externalLink(source.url, source.title)).join(" / ")}` : world.videoCredit ? ` · Видео: ${externalLink(world.videoCreditUrl, world.videoCredit)}` : ""}</p>
       <div class="dossier-chapters">
         <div class="dossier-reading">
+          ${primaryArt.map(art => `<img class="reading-backdrop" src="${escape(art.src)}" alt="" width="${Number(art.width)||1200}" height="${Number(art.height)||800}" loading="lazy" aria-hidden="true">`).join("")}
+          <div class="reading-shade" aria-hidden="true"></div>
           <div class="world-copy">
             <section class="dossier-block world-description"><h3>О мире</h3>${world.premise.map((text) => `<p>${escape(text)}</p>`).join("")}${worldChoices.map(choice => renderChoice(world, choice)).join("")}${world.bureaus ? `<dl class="bureau-list">${world.bureaus.map(bureau => `<div><dt>${escape(bureau.title)}</dt><dd>${escape(bureau.description)}</dd></div>`).join("")}</dl>` : ""}${bureauChoice ? `<div class="bureau-inline">${renderChoice(world, bureauChoice)}</div>` : ""}</section>
             ${cityChoices.length ? `<section class="dossier-block city-chapter" aria-label="Выбор города">${cityChoices.map(choice => renderChoice(world, choice)).join("")}</section>` : ""}
             <section class="dossier-block story-chapter"><h3>Ваша история</h3>${world.story || !storyChoices.length ? `<p>${escape(world.story || "—")}</p>` : ""}${storyChoices.map(choice => renderChoice(world, choice)).join("")}</section>
-            ${otherChoices.length ? `<section class="preferences" aria-label="Пожелания к миру"><h3>Настроим под нас</h3><p>Можно выбрать сейчас или обсудить вместе.</p>${otherChoices.map((choice) => renderChoice(world, choice)).join("")}</section>` : ""}
+            ${otherChoices.length ? `<section class="preferences" aria-label="Пожелания к миру">${otherChoices.map((choice) => renderChoice(world, choice)).join("")}</section>` : ""}
           </div>
-          ${world.atmosphereArt?.length ? `<div class="chapter-gallery" aria-label="Иллюстрации мира">${world.atmosphereArt.map(art => renderAtmosphereArt(art)).join("")}</div>` : ""}
+          ${primaryArt.length ? `<p class="scene-credit">${externalLink(primaryArt[0].url, primaryArt[0].credit)}</p>` : ""}
         </div>
+        ${additionalArt.length ? `<div class="additional-art" aria-label="Иллюстрации мира">${additionalArt.map((art,index) => renderAtmosphereArt(art, index === 0 ? "art-feature" : "")).join("")}</div>` : ""}
         ${renderMaterials(world)}
       </div>
       <div class="dossier-end">
-        <section class="system-block"><h3>На какой системе</h3><strong>${escape(world.system.name)}</strong><p class="field-help">${escape(world.system.status)}</p><p>${escape(world.system.description)}</p><p>${externalLink(world.system.url, world.system.linkLabel)}</p></section>
-        <section class="references-block"><h3>Поймать настроение</h3><ul class="ref-list">${world.references.map((item) => `<li>${externalLink(item.url, item.title)}<span>${escape(item.note)}</span></li>`).join("")}</ul><p class="field-help">Референсы — по желанию. Смотреть и читать заранее не обязательно.</p></section>
-      </div>`;
-    if (animate && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      requestAnimationFrame(() => content.classList.add("dossier-refresh"));
-    }
-    document.querySelectorAll("[data-world]").forEach((element) => {
-      const selected = element.dataset.world === world.id;
-      element.setAttribute(element.tagName === "BUTTON" ? "aria-pressed" : "aria-current", String(selected));
-    });
+        <section class="system-block"><h3>На какой системе</h3><strong>${escape(world.system.name)}</strong><p>${escape(world.system.description)}</p><p>${externalLink(world.system.url, world.system.linkLabel)}</p></section>
+        <section class="references-block"><h3>Поймать настроение</h3><ul class="ref-list">${world.references.map((item) => `<li>${externalLink(item.url, item.title)}</li>`).join("")}</ul></section>
+      </div></div>`;
     setupAtmosphere(content);
     observeEntrances(content);
     bindPreferences(content);
-    renderUnansweredQuestions();
     content.querySelectorAll(".material-image img").forEach((image) => image.addEventListener("error", () => {
       const notice = document.createElement("p");
       notice.className = "field-help";
@@ -280,7 +319,7 @@
         <div class="scale-ticks" aria-hidden="true">${Array.from({ length: 10 }, (_, index) => `<span>${index + 1}</span>`).join("")}</div>
         </div>
       </div>`).join("");
-    form.querySelectorAll('input[type="range"]').forEach(input => {
+    byId("interest-list").querySelectorAll('input[type="range"]').forEach(input => {
       input.addEventListener("input", () => updateRating(input));
       input.addEventListener("pointerdown", () => { updateRating(input); captureForm(); });
     });
@@ -296,7 +335,7 @@
   function formValues() {
     const values = Object.fromEntries(new FormData(form).entries());
     for (const name of Object.keys(values)) if (name.startsWith("pref-")) delete values[name];
-    form.querySelectorAll('input[type="range"]').forEach(input => {
+    byId("interest-list").querySelectorAll('input[type="range"]').forEach(input => {
       if (input.dataset.rated !== "true") delete values[input.name];
     });
     return values;
@@ -337,7 +376,7 @@
     lines.push("", "ПОЖЕЛАНИЯ К МИРАМ");
     for (const world of campaigns) {
       lines.push("", world.title);
-      for (const choice of world.choices) lines.push(`${choice.label} ${selectedOptions(world, choice).map(option => option.label).join("; ") || "Обсудим вместе"}`);
+      for (const choice of world.choices) lines.push(`${choice.label} ${answerLabel(world, choice)}`);
     }
     lines.push("", "ЧЕГО ХОЧЕТСЯ", values.wishes.trim() || "Обсудим вместе", "", "ОСТАВИТЬ ЗА КАДРОМ", values.boundaries.trim() || "Обсудим отдельно");
     return lines.join("\n");
@@ -438,18 +477,18 @@
     control.addEventListener("click", (event) => {
       if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
       if (control.tagName === "A") event.preventDefault();
-      if (state.active !== control.dataset.world) {
-        state.active = control.dataset.world;
-        renderDossier(event.detail !== 0);
-        save();
-      }
+      state.active = control.dataset.world;
+      document.querySelectorAll(".world-open").forEach(link => link.setAttribute("aria-current",String(link.dataset.world === state.active)));
+      save();
       const url = new URL(location.href);
       url.searchParams.set("world", state.active);
-      if (control.tagName === "A") url.hash = "dossier";
+      if (control.tagName === "A") url.hash = `dossier-${state.active}`;
       try { history.replaceState(null, "", url.href); } catch { /* Some file viewers restrict history. */ }
-      if (control.tagName === "A") byId("dossier").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+      if (control.tagName === "A") byId(`dossier-${state.active}`).scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
     });
   });
 
   observeEntrances(document);
+  const deepLinkedChapter = byId(location.hash === "#dossier" && requestedWorld ? `dossier-${state.active}` : location.hash.slice(1));
+  if (deepLinkedChapter?.classList.contains("setting-page")) requestAnimationFrame(() => deepLinkedChapter.scrollIntoView({behavior:"instant"}));
 })();

@@ -1,0 +1,426 @@
+/* Setting-specific art direction. The imagery, type and overlays are intentional. */
+.worlds {
+  padding-block:18px 72px
+}
+.world-list {
+  gap:18px
+}
+.world-open {
+  position:relative
+}
+.world-image {
+  aspect-ratio:auto;
+  height:clamp(460px,calc(100svh - 172px),840px)
+}
+.world-image::after {
+  content:'';
+  position:absolute;
+  inset:45% 0 0;
+  /* taste-skill-ignore: neutral scrim over photography preserves text contrast. */
+  background:linear-gradient(transparent,rgba(8,11,12,.92)); /* taste-skill-ignore */
+  pointer-events:none
+}
+.world[data-setting=anomalies] .world-image img {
+  object-position:35% 48%
+}
+.world[data-setting=urban-fantasy] .world-image img {
+  object-position:35% 50%
+}
+.world-caption {
+  position:absolute;
+  inset:auto 24px 30px;
+  margin:0;
+  padding:0
+}
+.world-title {
+  font-size:clamp(28px,2.8vw,42px);
+  line-height:1.15
+}
+.world-title span,.world-open[aria-current=true] .world-title span {
+  padding:0;
+  background:none;
+  color:#fff
+}
+[data-setting=anomalies] :is(h2,h3),[data-reminder-world=anomalies] h3 {
+  font-family:'Roboto Condensed',Onest,sans-serif;
+  font-weight:600;
+  letter-spacing:-.025em
+}
+[data-setting=urban-fantasy] :is(h2,h3),[data-reminder-world=urban-fantasy] h3 {
+  /* taste-skill-ignore: the user explicitly requested typewriter headings for Wolf. */
+  font-family:'PT Mono',monospace; /* taste-skill-ignore */
+  font-weight:400;
+  letter-spacing:-.045em
+}
+[data-setting=vampire] :is(h2,h3),[data-reminder-world=vampire] h3 {
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-weight:600;
+  letter-spacing:-.03em
+}
+.world[data-setting=vampire] .world-title {
+  font-size:clamp(32px,3.2vw,48px)
+}
+.world-open:focus-visible {
+  outline-offset:6px
+}
+.dossier-section {
+  padding:0;
+  background:none
+}
+.setting-page {
+  --setting-bg:#151b1c;
+  --setting-accent:#d9d4ba;
+  position:relative;
+  background:var(--setting-bg);
+  scroll-margin-top:0;
+  padding-bottom:100px;
+  isolation:isolate
+}
+.setting-page[data-setting=urban-fantasy] {
+  --setting-bg:#13151e;
+  --setting-accent:#e5d198
+}
+.setting-page[data-setting=vampire] {
+  --setting-bg:#1b1014;
+  --setting-accent:#debbb2
+}
+.dossier-visual {
+  aspect-ratio:auto;
+  height:clamp(480px,78svh,880px);
+  background:var(--setting-bg)
+}
+.dossier-art,.atmosphere-video {
+  object-position:center;
+  object-fit:cover
+}
+.hero-shade {
+  position:absolute;
+  inset:0;
+  /* taste-skill-ignore: neutral scrim over photography preserves text contrast. */
+  background:linear-gradient(180deg,rgba(5,8,10,.04) 20%,rgba(5,8,10,.3) 55%,var(--setting-bg)); /* taste-skill-ignore */
+  pointer-events:none
+}
+.dossier-title-row {
+  position:absolute;
+  inset:auto 0 44px;
+  z-index:2;
+  display:block;
+  margin:0 auto
+}
+.dossier-title-row h2 {
+  max-width:17ch;
+  color:#fff;
+  font-size:clamp(52px,7.2vw,112px);
+  line-height:1.02;
+  font-weight:inherit
+}
+.setting-page[data-setting=urban-fantasy] .dossier-title-row h2 {
+  font-size:clamp(42px,6.1vw,88px);
+  max-width:15ch
+}
+.setting-page[data-setting=vampire] .dossier-title-row h2 {
+  font-size:clamp(56px,8vw,120px);
+  max-width:18ch;
+  line-height:.98
+}
+.video-toggle {
+  top:24px;
+  right:32px;
+  bottom:auto;
+  z-index:3;
+  background:rgba(12,16,18,.9)
+}
+.setting-body {
+  position:relative
+}
+.art-caption {
+  margin-top:0;
+  color:#aab3b1;
+  font-size:13px;
+  max-width:90ch
+}
+.dossier-chapters {
+  margin-top:64px
+}
+.dossier-reading {
+  display:block;
+  position:relative;
+  isolation:isolate;
+  min-height:700px;
+  margin-inline:calc((min(1280px,100vw - 96px) - 100vw)/2);
+  padding:70px max(48px,calc((100vw - 1280px)/2)) 88px;
+  overflow:hidden
+}
+.reading-backdrop {
+  position:absolute;
+  inset:0;
+  z-index:-3;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  opacity:.7
+}
+.reading-shade {
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  /* taste-skill-ignore: neutral scrim over photography preserves text contrast. */
+  background:linear-gradient(90deg,var(--setting-bg) 8%,rgba(10,15,18,.94) 32%,rgba(10,15,18,.77) 57%,rgba(10,15,18,.12)),linear-gradient(var(--setting-bg),transparent 16%,transparent 78%,var(--setting-bg)) /* taste-skill-ignore */
+}
+.world-copy {
+  max-width:650px;
+  width:54%;
+  position:relative;
+  z-index:1
+}
+.world-copy :is(p,dd) {
+  color:#edf0ed
+}
+.world-copy h3 {
+  color:var(--setting-accent)
+}
+.world-description>p:first-of-type {
+  font-size:20px;
+  line-height:1.65
+}
+.world-description h3,.story-chapter h3 {
+  font-size:32px
+}
+.setting-page[data-setting=vampire] .world-copy h3 {
+  font-size:40px
+}
+.bureau-list {
+  gap:30px;
+  margin-top:32px
+}
+.bureau-list dt {
+  color:var(--setting-accent);
+  font-weight:600
+}
+.choice-label {
+  background:rgba(48,56,58,.94)
+}
+.choice-label:has(input:checked) {
+  background:var(--accent)
+}
+.bureau-inline,.story-chapter .choice-group {
+  margin-top:28px
+}
+.scene-credit {
+  max-width:45ch;
+  position:absolute;
+  right:32px;
+  bottom:24px;
+  font-size:13px;
+  color:#c2cbc7
+}
+.scene-credit a {
+  text-decoration:none
+}
+.additional-art {
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:34px;
+  margin-top:44px;
+  align-items:start
+}
+.additional-art .art-feature {
+  grid-column:1/-1
+}
+.additional-art .art-feature img {
+  max-height:680px;
+  object-fit:contain
+}
+.chapter-art figcaption {
+  font-size:13px;
+  opacity:.8
+}
+.dossier-end {
+  margin-top:76px;
+  gap:80px
+}
+.system-block {
+  background:none;
+  padding:0
+}
+.references-block {
+  padding:0
+}
+.dossier-end :is(h3,strong) {
+  color:var(--setting-accent)
+}
+.setting-page[data-setting=vampire] .dossier-end h3 {
+  font-size:34px
+}
+.tone-choice {
+  margin-top:30px;
+  max-width:560px
+}
+.tone-endpoints {
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:14px;
+  align-items:center;
+  font-size:14px;
+  color:var(--setting-accent,var(--accent))
+}
+.tone-endpoints>span:last-child {
+  text-align:right
+}
+.tone-endpoints output {
+  font-variant-numeric:tabular-nums;
+  color:var(--ink)
+}
+.redaction-marks {
+  display:grid;
+  gap:9px;
+  margin-top:20px;
+  width:230px
+}
+.redaction-marks span {
+  display:block;
+  position:relative;
+  width:max-content;
+  line-height:1;
+  font-size:14px;
+  color:#c4c9bc;
+  overflow:hidden
+}
+.redaction-marks span::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:#060808;
+  transform-origin:left;
+  transform:scaleX(1)
+}
+.blood-drips {
+  display:flex;
+  align-items:start;
+  gap:44px;
+  height:50px;
+  margin-left:18px;
+  margin-top:5px;
+  pointer-events:none
+}
+.blood-drips i {
+  display:block;
+  width:4px;
+  height:44px;
+  border-radius:0 0 5px 5px;
+  background:#8f2532;
+  transform-origin:top
+}
+.blood-drips i:nth-child(2) {height:23px;width:3px}
+.blood-drips i:nth-child(3) {height:34px}
+.blood-drips i:nth-child(4) {height:18px;width:3px}
+@media(hover:hover) and (pointer:fine) {
+  .world-open:hover .world-image img {transform:scale(1.045)}
+  .world-open:hover .world-title {transform:translateY(-5px)}
+  .world-title {transition:transform var(--t-ui) var(--ease-out)}
+  .art-open img {transition:transform 600ms var(--ease-out)}
+  .art-open:hover img {transform:scale(1.015)}
+}
+@media(prefers-reduced-motion:no-preference) {
+  .world {animation:poster-enter 900ms var(--ease-out) both}
+  .world:nth-child(2) {animation-delay:65ms}
+  .world:nth-child(3) {animation-delay:130ms}
+  .dossier-visual.reveal-image {animation:scene-enter 1000ms var(--ease-out) both}
+  .chapter-art.reveal-image {animation:art-enter 850ms var(--ease-out) both}
+  .dossier-title-row:has(.reveal) .redaction-marks span::after {animation:censor 1600ms var(--ease-out) both}
+  .dossier-title-row:has(.reveal) .redaction-marks span:nth-child(2)::after {animation-delay:180ms}
+  .dossier-title-row:has(.reveal) .blood-drips i {animation:blood-fall 1800ms var(--ease-out) both}
+  .blood-drips i:nth-child(2) {animation-delay:160ms!important}
+  .blood-drips i:nth-child(3) {animation-delay:80ms!important}
+  .blood-drips i:nth-child(4) {animation-delay:240ms!important}
+}
+@keyframes poster-enter {
+  from {opacity:.2;transform:translateY(24px)}
+  to {opacity:1;transform:none}
+}
+@keyframes scene-enter {
+  from {opacity:.3;transform:translateY(24px)}
+  to {opacity:1;transform:none}
+}
+@keyframes art-enter {
+  from {opacity:.3;transform:translateY(30px)}
+  to {opacity:1;transform:none}
+}
+@keyframes censor {
+  0%,20% {transform:scaleX(0)}
+  100% {transform:scaleX(1)}
+}
+@keyframes blood-fall {
+  from {opacity:.1;transform:scaleY(.15)}
+  to {opacity:.85;transform:scaleY(1)}
+}
+@media(max-width:1050px) {
+  .world-caption {inset:auto 18px 24px}
+  .world-title {font-size:30px}
+  .world[data-setting=urban-fantasy] .world-title {font-size:25px}
+  .world[data-setting=vampire] .world-title {font-size:34px}
+  .dossier-reading {margin-inline:-28px;padding-inline:28px}
+  .world-copy {width:65%}
+}
+@media(max-width:760px) {
+  .site-header {padding-block:12px}
+  .worlds {padding-block:8px 32px}
+  .world-list {gap:12px}
+  .world-image {height:clamp(112px,calc((100svh - 145px)/3),185px);aspect-ratio:auto}
+  .world-image img {object-fit:cover}
+  .world[data-setting=anomalies] .world-image img {object-position:50% 22%}
+  .world[data-setting=urban-fantasy] .world-image img {object-position:50% 40%}
+  .world[data-setting=vampire] .world-image img {object-position:50% 33%}
+  /* taste-skill-ignore: neutral scrim over the mobile cover photographs. */
+  .world-image::after {inset:0;background:linear-gradient(90deg,rgba(4,8,10,.83),rgba(4,8,10,.3) 65%,transparent)} /* taste-skill-ignore */
+  .world-caption {inset:0 20px;display:flex;align-items:center}
+  .world-title,.world[data-setting=urban-fantasy] .world-title {font-size:clamp(23px,6.5vw,34px);max-width:17ch;line-height:1.13}
+  .world[data-setting=vampire] .world-title {font-size:clamp(29px,8vw,42px);max-width:18ch}
+  .setting-page {padding-bottom:64px}
+  .dossier-visual {height:clamp(380px,70svh,620px)}
+  .dossier-title-row {bottom:32px;margin:0 auto;inset-inline:0}
+  .dossier-title-row h2 {font-size:48px;max-width:15ch}
+  .setting-page[data-setting=urban-fantasy] .dossier-title-row h2 {font-size:clamp(35px,9vw,58px)}
+  .setting-page[data-setting=vampire] .dossier-title-row h2 {font-size:clamp(48px,12vw,72px)}
+  .video-toggle {top:16px;right:20px;font-size:13px;padding:9px 12px}
+  .dossier-chapters {margin-top:32px}
+  .art-caption {font-size:13px;max-width:100%;line-height:1.6}
+  .dossier-reading {margin-inline:-20px;padding:38px 20px 68px;min-height:0}
+  .world-copy {width:100%;max-width:600px}
+  .reading-backdrop {opacity:.4;object-position:60% center}
+  /* taste-skill-ignore: neutral scrim keeps the overprinted copy readable. */
+  .reading-shade {background:linear-gradient(90deg,rgba(10,15,18,.94),rgba(10,15,18,.72)),linear-gradient(var(--setting-bg),transparent 20%,var(--setting-bg))} /* taste-skill-ignore */
+  .world-description>p:first-of-type {font-size:18px;line-height:1.65}
+  .world-description h3,.story-chapter h3 {font-size:28px}
+  .bureau-list {gap:26px}
+  .scene-credit {right:20px;left:20px;bottom:20px;font-size:13px}
+  .additional-art {gap:24px;grid-template-columns:1fr;margin-top:24px}
+  .additional-art .art-feature {grid-column:auto}
+  .dossier-end {gap:36px;margin-top:44px}
+  .tone-endpoints {gap:8px;font-size:13px}
+  .redaction-marks {width:180px;margin-top:16px}
+  .redaction-marks span {font-size:13px}
+  .blood-drips {gap:30px;height:38px}
+  .blood-drips i {max-height:35px}
+  .vote-section {padding-top:56px}
+}
+@media(max-width:370px) {
+  .world-caption {inset-inline:16px}
+  .world-title,.world[data-setting=urban-fantasy] .world-title {font-size:23px}
+  .world[data-setting=vampire] .world-title {font-size:29px}
+  .dossier-reading {margin-inline:-16px;padding-inline:16px}
+  .dossier-title-row h2 {font-size:42px}
+}
+@media(max-width:760px) and (max-height:540px) and (orientation:landscape) {
+  .world-list {grid-template-columns:repeat(3,minmax(0,1fr))}
+  .world-image {height:calc(100svh - 125px)}
+  .world-caption {inset:0 12px 16px;align-items:end}
+  .world-title,.world[data-setting=urban-fantasy] .world-title {font-size:20px}
+  .world[data-setting=vampire] .world-title {font-size:25px}
+  .worlds {padding-bottom:26px}
+}
+@media(prefers-reduced-motion:reduce) {
+  .world-open:hover :is(img,.world-title),.art-open:hover img {transform:none}
+  .redaction-marks span::after {transform:scaleX(1)}
+  .blood-drips i {opacity:.7;transform:none}
+}
