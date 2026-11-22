@@ -2,7 +2,7 @@
   'use strict';
   const items = window.REFERENCE_LIBRARY || [];
   const names = { anomalies: 'SCP Foundation', 'urban-fantasy': 'Wolf Among Us', vampire: 'Vampire: The Masquerade' };
-  const types = { art: 'Арт / кадр', trailer: 'Видео', background: 'Фон 15 секунд', pinterest: 'Pinterest: поиск' };
+  const types = { art: 'Арт / кадр', trailer: 'Видео', background: 'Фоновое видео', pinterest: 'Pinterest: поиск' };
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   let selected = new Set();

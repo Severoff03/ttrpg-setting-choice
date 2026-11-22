@@ -12,6 +12,10 @@ window.CAMPAIGNS.push({
   videoCredit: "Bright · Netflix",
   videoCreditUrl: "https://www.youtube.com/watch?v=6EZCBSsBxko",
   backgroundVideo: "settings/urban-fantasy/videos/bright-atmosphere.mp4",
+  atmosphereArt: [
+    { src: "settings/urban-fantasy/images/references/wolf-characters.webp", alt: "Персонажи сказочного сообщества в напряжённой сцене разговора", credit: "The Wolf Among Us · Telltale Games", url: "https://store.steampowered.com/app/250320/" },
+    { src: "settings/urban-fantasy/images/references/wolf-interior.webp", alt: "Нуарный интерьер с тёплым светом и глубокими тенями", credit: "The Wolf Among Us · Telltale Games", url: "https://store.steampowered.com/app/250320/" },
+  ],
   hook: "У этого города две стороны. Вы знаете дорогу между ними.",
   premise: ["—"],
   story: "—",

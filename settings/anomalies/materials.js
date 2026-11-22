@@ -3,12 +3,12 @@ window.REFERENCE_LIBRARY.push(...[
   {
     "id": "scp-background",
     "type": "background",
-    "title": "Инструктаж — фон 15 секунд",
-    "author": "SCP: OVERLORD / Evan Royalty / Stephen Hancock; CC BY-SA 3.0",
+    "title": "Оперативники SCP — нарезка 24,5 секунды",
+    "author": "SCP: OVERLORD / SCP: Dollhouse · Evan Royalty / Stephen Hancock · CC BY-SA 3.0",
     "url": "https://www.youtube.com/watch?v=EOxarwd3eTs",
-    "image": "settings/anomalies/images/references/scp-briefing.webp",
-    "src": "settings/anomalies/videos/overlord-atmosphere.mp4",
-    "description": "Короткий локальный фрагмент без звука для проверки фона. Можно воспроизвести прямо в подборке.",
+    "image": "settings/anomalies/images/scp-field-montage.webp",
+    "src": "settings/anomalies/videos/scp-field-montage.mp4",
+    "description": "Девять планов из двух игровых короткометражек: выдвижение, вход в здание и работа оперативной группы. Без звука.",
     "world": "anomalies"
   },
   {

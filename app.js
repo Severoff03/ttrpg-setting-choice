@@ -67,14 +67,62 @@
     return choice.options.find((option) => option.value === value);
   }
 
-  function renderChoice(world, choice) {
+  function renderChoice(world, choice, location = "dossier") {
     const selected = selectedOption(world, choice);
-    const noteId = `note-${world.id}-${choice.id}`;
+    const noteId = `note-${world.id}-${choice.id}-${location}`;
     return `<fieldset class="choice-group"><legend>${escape(choice.label)}</legend>
       <div class="choice-options">${choice.options.map((option) => `
-        <label class="choice-label"><input type="radio" name="pref-${escape(world.id)}-${escape(choice.id)}" value="${escape(option.value)}" data-preference="${escape(choice.id)}" aria-describedby="${noteId}" ${selected?.value === option.value ? "checked" : ""}><span>${escape(option.label)}</span></label>`).join("")}</div>
+        <label class="choice-label"><input type="radio" name="pref-${escape(world.id)}-${escape(choice.id)}-${escape(location)}" value="${escape(option.value)}" data-preference="${escape(choice.id)}" data-campaign-id="${escape(world.id)}" data-note-id="${noteId}" aria-describedby="${noteId}" ${selected?.value === option.value ? "checked" : ""}><span>${escape(option.label)}</span></label>`).join("")}</div>
       <p class="choice-note" id="${noteId}" aria-live="polite">${escape(selected?.note || "Можно оставить без выбора — решим вместе.")}</p>
     </fieldset>`;
+  }
+
+  function bindPreferences(root) {
+    root.querySelectorAll("input[data-preference]").forEach(input => {
+      input.addEventListener("change", () => {
+        const world = campaigns.find(item => item.id === input.dataset.campaignId);
+        const choice = world?.choices.find(item => item.id === input.dataset.preference);
+        if (!choice || !choice.options.some(option => option.value === input.value)) return;
+        const reminderHadFocus = byId("bureau-reminder").contains(document.activeElement);
+        if (!state.choices[world.id] || typeof state.choices[world.id] !== "object") state.choices[world.id] = {};
+        state.choices[world.id][choice.id] = input.value;
+        document.querySelectorAll("input[data-preference]").forEach(control => {
+          const campaign = campaigns.find(item => item.id === control.dataset.campaignId);
+          const question = campaign?.choices.find(item => item.id === control.dataset.preference);
+          if (!question) return;
+          const selected = selectedOption(campaign, question);
+          control.checked = control.value === selected?.value;
+          const note = byId(control.dataset.noteId);
+          if (note) note.textContent = selected?.note || "Можно оставить без выбора — решим вместе.";
+        });
+        if (choice.id === "bureau") {
+          renderBureauReminder();
+          if (reminderHadFocus) byId("wishes").focus();
+        }
+        invalidateExport();
+        save();
+      });
+    });
+  }
+
+  function renderBureauReminder() {
+    const world = campaigns.find(item => item.id === "anomalies");
+    const choice = world?.choices.find(item => item.id === "bureau");
+    const container = byId("bureau-reminder");
+    const confirmation = byId("bureau-confirmation");
+    const selected = choice && selectedOption(world, choice);
+    container.hidden = !choice || Boolean(selected);
+    confirmation.hidden = !selected;
+    confirmation.textContent = selected ? `SCP Foundation: ${selected.label}` : "";
+    container.replaceChildren();
+    if (!choice || selected) return;
+    container.innerHTML = `<h3>SCP Foundation</h3>${renderChoice(world, choice, "reminder")}`;
+    bindPreferences(container);
+  }
+
+  function renderAtmosphereArt(art, className = "") {
+    if (!art) return "";
+    return `<figure class="chapter-art ${escape(className)}"><img src="${escape(art.src)}" alt="${escape(art.alt)}" width="1200" height="800" loading="lazy"><figcaption>${externalLink(art.url, art.credit)}</figcaption></figure>`;
   }
 
   function renderMaterials(world) {
@@ -92,6 +140,8 @@
   function renderDossier(animate = false) {
     const world = campaigns.find((item) => item.id === state.active);
     if (!world) return;
+    const bureauChoice = world.choices.find(choice => choice.id === "bureau");
+    const otherChoices = world.choices.filter(choice => choice.id !== "bureau");
     const content = byId("dossier-content");
     content._atmosphereCleanup?.();
     content._atmosphereCleanup = null;
@@ -103,19 +153,18 @@
         <img class="dossier-art" src="${escape(world.cover)}" alt="${escape(world.coverAlt)}" width="1200" height="480" loading="lazy">
         ${world.backgroundVideo ? `<video class="atmosphere-video" loop muted playsinline preload="none" poster="${escape(world.cover)}" aria-hidden="true" tabindex="-1"><source src="${escape(world.backgroundVideo)}" type="video/mp4"></video><button type="button" class="video-toggle" aria-pressed="false">Включить атмосферу</button>` : ""}
       </div>
-      <p class="art-caption">${externalLink(world.creditUrl, world.credit || "Материалы для обсуждения")}${world.videoCredit ? ` · Видео: ${externalLink(world.videoCreditUrl, world.videoCredit)}` : ""}</p>
-      <div class="dossier-layout">
-        <div class="dossier-summary">
-          <p>${escape(world.cardText)}</p>
-          <a href="#vote" class="button primary dossier-vote">Хочу сыграть</a>
-          <a href="materials.html?world=${escape(world.id)}" class="text-link">Арты и видео этого мира</a>
+      <p class="art-caption">${externalLink(world.creditUrl, world.credit || "Материалы для обсуждения")}${world.videoSources?.length ? ` · Видео: ${world.videoSources.map(source => externalLink(source.url, source.title)).join(" / ")}` : world.videoCredit ? ` · Видео: ${externalLink(world.videoCreditUrl, world.videoCredit)}` : ""}</p>
+      <div class="dossier-chapters">
+        <div class="world-chapter">
+          <section class="dossier-block world-description"><h4>О мире</h4>${world.premise.map((text) => `<p>${escape(text)}</p>`).join("")}${world.bureaus ? `<dl class="bureau-list">${world.bureaus.map(bureau => `<div><dt>${escape(bureau.title)}</dt><dd>${escape(bureau.description)}</dd></div>`).join("")}</dl>` : ""}${bureauChoice ? `<div class="bureau-inline">${renderChoice(world, bureauChoice)}</div>` : ""}</section>
+          ${renderAtmosphereArt(world.atmosphereArt?.[0])}
         </div>
-        <div class="dossier-body">
-          <section class="dossier-block"><h4>О мире</h4>${world.premise.map((text) => `<p>${escape(text)}</p>`).join("")}${world.bureaus ? `<dl class="bureau-list">${world.bureaus.map(bureau => `<div><dt>${escape(bureau.title)}</dt><dd>${escape(bureau.description)}</dd></div>`).join("")}</dl>` : ""}</section>
+        <div class="world-chapter story-chapter">
           <section class="dossier-block"><h4>Ваша история</h4><p>${escape(world.story || "—")}</p></section>
-          <section class="preferences" aria-label="Пожелания к миру"><h4>Настроим под нас</h4><p>Это пожелания, а не готовый договор. Можно не выбирать.</p>${world.choices.map((choice) => renderChoice(world, choice)).join("")}</section>
-          ${renderMaterials(world)}
+          ${renderAtmosphereArt(world.atmosphereArt?.[1])}
         </div>
+        ${otherChoices.length ? `<section class="preferences" aria-label="Пожелания к миру"><h4>Настроим под нас</h4><p>Это пожелания, а не готовый договор. Можно не выбирать.</p>${otherChoices.map((choice) => renderChoice(world, choice)).join("")}</section>` : ""}
+        ${renderMaterials(world)}
       </div>
       <div class="dossier-end">
         <div><h4>На какой системе</h4><strong>${escape(world.system.name)}</strong><p class="field-help">${escape(world.system.status)}</p><p>${escape(world.system.description)}</p><p>${externalLink(world.system.url, world.system.linkLabel)}</p></div>
@@ -129,22 +178,9 @@
       element.setAttribute(element.tagName === "BUTTON" ? "aria-pressed" : "aria-current", String(selected));
     });
     byId("world-select").value = world.id;
-    content.querySelector(".dossier-vote").addEventListener("click", () => {
-      byId("favorite").value = world.id;
-      captureForm();
-    });
     setupAtmosphere(content);
-    content.querySelectorAll("input[data-preference]").forEach((input) => {
-      input.addEventListener("change", () => {
-        const choice = world.choices.find((item) => item.id === input.dataset.preference);
-        if (!choice) return;
-        if (!state.choices[world.id] || typeof state.choices[world.id] !== "object") state.choices[world.id] = {};
-        state.choices[world.id][choice.id] = input.value;
-        byId(`note-${world.id}-${choice.id}`).textContent = selectedOption(world, choice)?.note || "";
-        invalidateExport();
-        save();
-      });
-    });
+    bindPreferences(content);
+    renderBureauReminder();
     content.querySelectorAll(".material-image img").forEach((image) => image.addEventListener("error", () => {
       const notice = document.createElement("p");
       notice.className = "field-help";
@@ -164,7 +200,11 @@
       button.textContent = video.paused ? "Включить атмосферу" : "Пауза видео";
       button.setAttribute("aria-pressed", String(!video.paused));
     };
-    const play = () => video.play().then(label).catch(() => { requested = false; label(); });
+    const play = () => video.play().then(label).catch(error => {
+      // Scrolling can pause a still-loading video; preserve intent for its next appearance.
+      if (error.name !== "AbortError") requested = false;
+      label();
+    });
     button.addEventListener("click", () => {
       requested = video.paused;
       if (requested) play(); else { video.pause(); label(); }
@@ -251,9 +291,7 @@
 
   function generateAnswer() {
     const values = formValues();
-    const favorite = campaigns.find((world) => world.id === values.favorite)?.title || "Любой — главное компания";
-    const format = byId("game-format").selectedOptions[0].textContent;
-    const lines = ["НАША СЛЕДУЮЩАЯ ИСТОРИЯ", "", `Игрок: ${values.playerName.trim()}`, `Фаворит: ${favorite}`, `Формат: ${format}`, "", "ИНТЕРЕС К МИРАМ"];
+    const lines = ["НАША СЛЕДУЮЩАЯ ИСТОРИЯ", "", `Игрок: ${values.playerName.trim()}`, "", "ИНТЕРЕС К МИРАМ"];
     for (const world of campaigns) lines.push(`${world.title}: ${values[`interest-${world.id}`] ? `${values[`interest-${world.id}`]} / 10` : "Не указан"}`);
     lines.push("", "ПОЖЕЛАНИЯ К МИРАМ");
     for (const world of campaigns) {

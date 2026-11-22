@@ -5,8 +5,8 @@ window.CAMPAIGNS.push({
   shortTitle: "SCP Foundation",
   genre: "Паранормальный триллер",
   cardText: "У реальности есть правила. Ваша работа — разбираться с исключениями.",
-  cover: "settings/anomalies/images/cover.webp",
-  coverAlt: "Кадр инструктажа оперативной группы SCP в фильме OVERLORD",
+  cover: "settings/anomalies/images/scp-field-montage.webp",
+  coverAlt: "Оперативники SCP выдвигаются через лес в фильме OVERLORD",
   credit: "SCP: OVERLORD · Evan Royalty / Stephen Hancock · CC BY-SA 3.0",
   creditUrl: "https://www.youtube.com/watch?v=EOxarwd3eTs",
   hook: "Вчера этой двери не было. Сегодня за ней пропала ваша смена.",
@@ -26,15 +26,6 @@ window.CAMPAIGNS.push({
       { value: "control", label: "Бюро контроля", note: "Хранение и подробное изучение SCP." },
       { value: "protection", label: "Бюро защиты", note: "Оперативная работа при непредвиденных ситуациях." },
     ] },
-    { id: "tone", label: "Какая атмосфера ближе?", options: [
-      { value: "horror", label: "Тревога и хоррор", note: "Меньше ответов, больше уязвимости и неизвестности." },
-      { value: "mystery", label: "Странный детектив", note: "Улики, эксперименты и постепенно складывающаяся картина." },
-      { value: "action", label: "Экшен в духе Control", note: "Сверхспособности и опасные вылазки; странности остаются в центре." },
-    ] },
-    { id: "structure", label: "Как строить историю?", options: [
-      { value: "cases", label: "Отдельные дела", note: "Новая аномалия на каждую короткую историю, общий сюжет на фоне." },
-      { value: "conspiracy", label: "Одна большая тайна", note: "Все дела ведут к одному инциденту и людям за ним." },
-    ] },
   ],
   system: {
     name: "Fate Condensed",
@@ -51,7 +42,15 @@ window.CAMPAIGNS.push({
   ],
   // Медиа не подключаются автоматически. Добавляйте свои файлы в images/, videos/, texts/.
   // Пример картинки: { src: "settings/anomalies/images/hall.jpg", alt: "Описание", caption: "Подпись" }
-  backgroundVideo: "settings/anomalies/videos/overlord-atmosphere.mp4",
+  backgroundVideo: "settings/anomalies/videos/scp-field-montage.mp4",
+  videoSources: [
+    { title: "SCP: OVERLORD", url: "https://www.youtube.com/watch?v=EOxarwd3eTs" },
+    { title: "SCP: Dollhouse", url: "https://www.youtube.com/watch?v=xVx2jyDPinw" },
+  ],
+  atmosphereArt: [
+    { src: "settings/anomalies/images/references/control-architecture.webp", alt: "Одинокая фигура в огромном тёмном пространстве аномального комплекса", credit: "Control · Remedy Entertainment", url: "https://www.remedygames.com/games/control" },
+    { src: "settings/anomalies/images/references/scp-lab.webp", alt: "Коридоры технического комплекса с точки зрения оперативника", credit: "SCP: 5K · Affray Interactive", url: "https://store.steampowered.com/app/872670/" },
+  ],
   images: [],
   // Пример видео: { src: "settings/anomalies/videos/trailer.mp4", title: "Настроение игры", poster: "settings/anomalies/images/poster.jpg" }
   videos: [],

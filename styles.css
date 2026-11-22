@@ -326,30 +326,63 @@ h4 {
 .art-caption a {
   text-decoration:none
 }
-.dossier-layout {
+.dossier-chapters {
+  margin-top:42px
+}
+.world-chapter {
   display:grid;
-  grid-template-columns:240px minmax(0,1fr);
-  gap:70px;
-  margin-top:42px;
+  grid-template-columns:minmax(0,1.25fr) minmax(0,.8fr);
+  gap:64px;
   align-items:start
 }
-.dossier-summary {
-  display:flex;
-  flex-direction:column;
-  align-items:start
+.world-chapter > section {
+  min-width:0
 }
-.dossier-summary>p {
+.chapter-art {
+  margin:0;
+  min-width:0
+}
+.chapter-art img {
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:4/5;
+  object-fit:cover
+}
+.chapter-art figcaption {
+  margin-top:10px;
+  font-size:14px;
+  line-height:1.5;
   color:var(--muted)
 }
-.dossier-summary .button {
-  margin-top:24px
+.chapter-art a {
+  text-decoration:none
 }
-.dossier-summary .text-link {
+.story-chapter {
+  margin-top:48px;
+  grid-template-columns:minmax(0,.8fr) minmax(0,1.25fr);
+  align-items:center
+}
+.story-chapter .chapter-art img {
+  aspect-ratio:16/10
+}
+.bureau-inline {
+  margin-top:28px
+}
+.bureau-reminder {
+  margin-bottom:28px;
+  padding:22px;
+  background:var(--surface);
+  border-radius:4px
+}
+.bureau-reminder h3 {
+  margin-bottom:16px;
+  font-size:20px
+}
+.bureau-confirmation {
+  margin-bottom:26px;
+  color:var(--muted);
   font-size:14px
-}
-.dossier-body {
-  min-width:0;
-  max-width:740px
 }
 .dossier-block+.dossier-block {
   margin-top:32px
@@ -890,9 +923,8 @@ summary {
   .dossier-top {
     align-items:start
   }
-  .dossier-layout {
-    grid-template-columns:200px minmax(0,1fr);
-    gap:40px
+  .world-chapter {
+    gap:32px
   }
   .vote-section {
     grid-template-columns:1fr 1.65fr;
@@ -1022,20 +1054,21 @@ summary {
     font-size:14px;
     line-height:1.5
   }
-  .dossier-layout {
-    display:grid;
-    grid-template-columns:1fr;
-    gap:32px;
+  .dossier-chapters {
     margin-top:30px
   }
-  .dossier-summary {
-    order:2
+  .world-chapter {
+    grid-template-columns:1fr;
+    gap:25px
   }
-  .dossier-body {
-    order:1
+  .chapter-art img {
+    aspect-ratio:16/10
   }
-  .dossier-summary .button {
-    margin-top:18px
+  .story-chapter {
+    margin-top:34px
+  }
+  .bureau-reminder {
+    padding:20px 16px
   }
   .bureau-list>div {
     padding:17px 18px

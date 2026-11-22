@@ -7,13 +7,13 @@
   <meta name="description" content="Три мира для нашей следующей настольной ролевой игры. Прочитайте завязки, выберите атмосферу и расскажите, во что хочется сыграть.">
   <title>Выбор сеттинга — SCP, Wolf Among Us, Vampire</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=39bce99286">
   <link rel="preload" href="assets/fonts/Onest-Variable.ttf" as="font" type="font/ttf" crossorigin>
-  <script src="site.config.js" defer></script>
-  <script src="settings/anomalies/setting.js" defer></script>
-  <script src="settings/urban-fantasy/setting.js" defer></script>
-  <script src="settings/vampire/setting.js" defer></script>
-  <script src="app.js" defer></script>
+  <script src="site.config.js?v=292b80ce52" defer></script>
+  <script src="settings/anomalies/setting.js?v=228bd02282" defer></script>
+  <script src="settings/urban-fantasy/setting.js?v=7bb100cc1c" defer></script>
+  <script src="settings/vampire/setting.js?v=d17764cc45" defer></script>
+  <script src="app.js?v=ccaaef461b" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">К содержимому</a>
@@ -56,7 +56,7 @@
       <div class="vote-intro">
         <h2 id="vote-title">Ваш выбор</h2>
         <p>Оцените миры и расскажите, какой игры вам хочется.</p>
-        <p class="secondary">Настройки каждого мира из досье тоже попадут в ваш ответ.</p>
+        <p class="secondary">Оценки и выбранное бюро попадут в ваш ответ.</p>
         <p id="delivery-note" class="delivery-note">Пока без отправки на сервер. Скопируйте ответ и пришлите ведущему в личные сообщения.</p>
       </div>
       <form id="feedback-form" class="feedback-form">
@@ -69,25 +69,8 @@
           <p id="scale-help" class="field-help">От 1 — совсем не интересно, до 10 — очень хочу сыграть. Передвиньте ползунок, чтобы поставить оценку.</p>
           <div id="interest-list"></div>
         </fieldset>
-        <div class="field">
-          <label for="favorite">Если выбрать только один <span class="secondary">(обязательно)</span></label>
-          <select id="favorite" name="favorite" required>
-            <option value="">Выберите фаворита</option>
-            <option value="anomalies">SCP Foundation</option>
-            <option value="urban-fantasy">Wolf Among Us</option>
-            <option value="vampire">Vampire: The Masquerade</option>
-            <option value="any">Любой — главное компания</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="game-format">Как начнём?</label>
-          <select id="game-format" name="format">
-            <option value="">Обсудим вместе</option>
-            <option value="one-shot">С пробной игры на один вечер</option>
-            <option value="short">С короткой истории на 3–5 встреч</option>
-            <option value="campaign">С полноценной кампании</option>
-          </select>
-        </div>
+        <section id="bureau-reminder" class="bureau-reminder" aria-label="Выбор бюро SCP Foundation" data-ui></section>
+        <p id="bureau-confirmation" class="bureau-confirmation" role="status" aria-live="polite" hidden></p>
         <div class="field">
           <label for="wishes">Что особенно хочется увидеть?</label>
           <textarea id="wishes" name="wishes" rows="3" maxlength="3000" placeholder="Сцены, персонажи, любимые референсы…"></textarea>

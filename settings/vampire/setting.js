@@ -12,7 +12,11 @@ window.CAMPAIGNS.push({
   videoCredit: "Bloodlines 2 · Paradox Interactive",
   videoCreditUrl: "https://www.youtube.com/watch?v=pjPWT0M7AOM",
   hook: "Вы пережили собственную смерть. Теперь попробуйте сохранить себя.",
-  premise: ["—"],
+  premise: [
+    "Среди вампиров живёт древняя легенда о Каине. За убийство своего брата Авеля он был проклят и стал первым вампиром. Три ангела усугубили его проклятие, обрекая на существование во тьме. От Каина пошли новые поколения вампиров, передававшие свою кровь и проклятие дальше.",
+    "В современном Мире Тьмы существует 14 вампирских кланов. Их представители различаются традициями, слабостями и наборами сверхъестественных способностей — Дисциплин. Одни подчиняют чужую волю, другие меняют облик или обладают нечеловеческой силой. Клан определяет многое, но не решает за персонажа, кем ему быть.",
+    "Вампирское общество скрыто от мира людей. Этот секрет называют Маскарадом: обычные горожане не должны узнать, кто живёт рядом с ними. При этом вампиры сильно влияют на человеческий мир — через деньги, политику, бизнес, личные связи и тех, кто выполняет их волю. За привычной жизнью города идёт другая: борьба за власть, территории и право пережить следующую ночь.",
+  ],
   story: "—",
   choices: [
     { id: "focus", label: "О чём будет хроника?", options: [
@@ -43,6 +47,10 @@ window.CAMPAIGNS.push({
     { title: "Vampire: The Masquerade — Bloodlines 2", url: "https://www.youtube.com/watch?v=pjPWT0M7AOM", note: "Релизный трейлер новой игры: ночной город и вампирская атмосфера." },
   ],
   backgroundVideo: "settings/vampire/videos/bloodlines2-atmosphere.mp4",
+  atmosphereArt: [
+    { src: "settings/vampire/images/references/vampire-gothic.webp", alt: "Вампирская готика на фоне ночного города", credit: "Vampire: The Masquerade — Bloodlines · Activision", url: "https://store.steampowered.com/app/2600/" },
+    { src: "settings/vampire/images/references/vampire-street.webp", alt: "Пустынная ночная улица с неоновыми вывесками", credit: "Vampire: The Masquerade — Bloodlines · Activision", url: "https://store.steampowered.com/app/2600/" },
+  ],
   images: [],
   videos: [],
   texts: [],

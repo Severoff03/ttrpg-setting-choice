@@ -4,8 +4,8 @@
 
 ## SCP Foundation
 
-- Фоновый фрагмент **SCP: OVERLORD**, 01:00–01:15. Канал Evan Royalty, режиссёр Stephen Hancock. [Оригинал](https://www.youtube.com/watch?v=EOxarwd3eTs). В описании автора указана Creative Commons Attribution-ShareAlike 3.0. Изменения: извлечён короткий фрагмент без звука, перекодирован в H.264; обложка — отдельный кадр, сжатый в WebP. Адаптированные материалы распространяются под [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/).
-- **SCP: Dollhouse** и тизер, Evan Royalty. [Фильм](https://www.youtube.com/watch?v=xVx2jyDPinw), [тизер](https://www.youtube.com/watch?v=t0fiJbA8UoI). В подборке сохранены превью и ссылки; полный фильм не загружен.
+- Фоновая нарезка **SCP: OVERLORD / SCP: Dollhouse**, 24,5 секунды, девять коротких планов. Канал Evan Royalty, режиссёр Stephen Hancock. [OVERLORD](https://www.youtube.com/watch?v=EOxarwd3eTs), [Dollhouse](https://www.youtube.com/watch?v=xVx2jyDPinw). В описаниях авторов указана Creative Commons Attribution-ShareAlike 3.0. Изменения: монтаж отрывков без звука, размер 960×400, H.264, небольшая коррекция яркости и насыщенности, затемнение на границе петли. Использованы OVERLORD 03:38–03:41, 05:38–05:40,5, 09:36–09:39, 12:36–12:38,5, 18:38–18:41; Dollhouse 01:18–01:20,5, 04:38–04:40,5, 09:18–09:20,5, 12:38–12:41. Обложка извлечена из первого плана. Адаптированные материалы распространяются под [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/).
+- **SCP: Dollhouse** и тизер, Evan Royalty. [Фильм](https://www.youtube.com/watch?v=xVx2jyDPinw), [тизер](https://www.youtube.com/watch?v=t0fiJbA8UoI). В подборке сохранены превью и ссылки; на сайте размещены только короткие отрывки, исходный фильм в публичный репозиторий не включён.
 - **Control**, Remedy Entertainment. [Официальная страница](https://www.remedygames.com/games/control), [трейлер](https://www.youtube.com/watch?v=uvKAHpIvbl8). Используется как дополнительный визуальный референс.
 - **SCP: 5K**, Affray Interactive. [Официальная страница в Steam](https://store.steampowered.com/app/872670/). Скриншот сохранён как вариант для сравнения, не основной фон.
 
