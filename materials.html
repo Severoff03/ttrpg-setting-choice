@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#141719">
+  <title>Арты и видео — подборка для сайта</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="settings/anomalies/materials.js" defer></script>
+  <script src="settings/urban-fantasy/materials.js" defer></script>
+  <script src="settings/vampire/materials.js" defer></script>
+  <script src="materials.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#reference-main">К подборке</a>
+  <header class="site-header wrap"><a class="wordmark" href="index.html"><span class="brand-mark" aria-hidden="true"></span>Выбор сеттинга</a><nav aria-label="Навигация"><a href="index.html">К сайту</a></nav></header>
+  <main id="reference-main" class="wrap">
+    <section class="reference-intro"><h1>Арты и видео</h1><p>Отметьте понравившиеся материалы, скопируйте подборку и пришлите её в чат.</p></section>
+    <div class="reference-controls">
+      <div><label for="filter-world">Сеттинг</label><select id="filter-world"><option value="all">Все сеттинги</option><option value="anomalies">SCP Foundation</option><option value="urban-fantasy">Wolf Among Us</option><option value="vampire">Vampire: The Masquerade</option></select></div>
+      <div><label for="filter-type">Материалы</label><select id="filter-type"><option value="all">Всё</option><option value="art">Арты и кадры</option><option value="trailer">Трейлеры и фильмы</option><option value="background">Короткие фоны</option><option value="pinterest">Поиск Pinterest</option><option value="selected">Только выбранные</option></select></div>
+      <p id="reference-count" class="field-help" role="status"></p>
+    </div>
+    <p id="reference-storage" class="field-help" role="status"></p>
+    <div id="reference-grid" class="reference-grid"></div>
+    <div id="selection-fallback" class="selection-fallback" hidden><label for="selection-text">Скопируйте текст вручную</label><textarea id="selection-text" readonly rows="10"></textarea></div>
+    <noscript>Для отбора материалов включите JavaScript. Источники также сохранены в settings/*/texts/material-sources.json.</noscript>
+  </main>
+  <aside class="selection-bar" aria-label="Выбранные материалы"><div class="wrap"><div><p id="selection-count">Пока ничего не выбрано</p><p id="selection-status" role="status" aria-live="polite"></p></div><button type="button" id="copy-selection" class="button primary">Скопировать подборку</button></div></aside>
+</body>
+</html>

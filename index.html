@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#141719">
+  <meta name="description" content="Три мира для нашей следующей настольной ролевой игры. Прочитайте завязки, выберите атмосферу и расскажите, во что хочется сыграть.">
+  <title>Выбор сеттинга — SCP, Wolf Among Us, Vampire</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preload" href="assets/fonts/Onest-Variable.ttf" as="font" type="font/ttf" crossorigin>
+  <script src="site.config.js" defer></script>
+  <script src="settings/anomalies/setting.js" defer></script>
+  <script src="settings/urban-fantasy/setting.js" defer></script>
+  <script src="settings/vampire/setting.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">К содержимому</a>
+  <header class="site-header wrap">
+    <a class="wordmark" href="#main" aria-label="Выбор сеттинга, в начало"><span class="brand-mark" aria-hidden="true"></span>Выбор сеттинга</a>
+    <nav aria-label="Основная навигация">
+      <a href="#worlds">Миры</a>
+      <a href="#dossier">Подробнее</a>
+      <a href="#vote" class="nav-action">Мой выбор</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="intro wrap" aria-labelledby="page-title">
+      <h1 id="page-title">Три мира. <br>Одна история.</h1>
+      <div class="intro-side">
+        <p>Прочитайте досье и выберите мир для нашей следующей игры.</p>
+        <p class="secondary">Лор и правила можно узнать по ходу. Сейчас важнее, какая атмосфера вам ближе.</p>
+        <a href="#worlds" class="text-link">Посмотреть сеттинги</a>
+      </div>
+    </section>
+
+    <section id="worlds" class="worlds wrap" aria-label="Три мира на выбор">
+      <div id="world-list" class="world-list"></div>
+      <p class="worlds-note">Откройте досье, чтобы узнать о мире и настроить игру под себя.</p>
+    </section>
+
+    <section id="dossier" class="dossier-section" aria-label="Досье выбранного мира">
+      <div class="wrap">
+        <div class="dossier-top">
+          <h2>Досье мира</h2>
+          <div id="world-switcher" class="world-switcher" role="group" aria-label="Выбрать досье"></div>
+          <div class="mobile-world-select"><label for="world-select">Открыть досье</label><select id="world-select"><option value="anomalies">SCP Foundation</option><option value="urban-fantasy">Wolf Among Us</option><option value="vampire">Vampire: The Masquerade</option></select></div>
+        </div>
+        <div id="dossier-content"></div>
+      </div>
+    </section>
+
+    <section id="vote" class="vote-section wrap" aria-labelledby="vote-title">
+      <div class="vote-intro">
+        <h2 id="vote-title">Ваш выбор</h2>
+        <p>Оцените миры и расскажите, какой игры вам хочется.</p>
+        <p class="secondary">Настройки каждого мира из досье тоже попадут в ваш ответ.</p>
+        <p id="delivery-note" class="delivery-note">Пока без отправки на сервер. Скопируйте ответ и пришлите ведущему в личные сообщения.</p>
+      </div>
+      <form id="feedback-form" class="feedback-form">
+        <div class="field">
+          <label for="player-name">Как к вам обращаться <span class="secondary">(обязательно)</span></label>
+          <input id="player-name" name="playerName" autocomplete="nickname" maxlength="60" placeholder="Имя или ник" required>
+        </div>
+        <fieldset class="ratings-fieldset">
+          <legend>Насколько вам интересен каждый мир?</legend>
+          <p id="scale-help" class="field-help">От 1 — совсем не интересно, до 10 — очень хочу сыграть. Передвиньте ползунок, чтобы поставить оценку.</p>
+          <div id="interest-list"></div>
+        </fieldset>
+        <div class="field">
+          <label for="favorite">Если выбрать только один <span class="secondary">(обязательно)</span></label>
+          <select id="favorite" name="favorite" required>
+            <option value="">Выберите фаворита</option>
+            <option value="anomalies">SCP Foundation</option>
+            <option value="urban-fantasy">Wolf Among Us</option>
+            <option value="vampire">Vampire: The Masquerade</option>
+            <option value="any">Любой — главное компания</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="game-format">Как начнём?</label>
+          <select id="game-format" name="format">
+            <option value="">Обсудим вместе</option>
+            <option value="one-shot">С пробной игры на один вечер</option>
+            <option value="short">С короткой истории на 3–5 встреч</option>
+            <option value="campaign">С полноценной кампании</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="wishes">Что особенно хочется увидеть?</label>
+          <textarea id="wishes" name="wishes" rows="3" maxlength="3000" placeholder="Сцены, персонажи, любимые референсы…"></textarea>
+        </div>
+        <div class="field">
+          <label for="boundaries">Что лучше оставить за кадром?</label>
+          <textarea id="boundaries" name="boundaries" rows="3" maxlength="3000" placeholder="Необязательно. Можно обсудить с ведущим отдельно."></textarea>
+          <p class="field-help">Этот текст войдёт в копируемый ответ. Черновик хранится в браузере на этом устройстве.</p>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="button primary">Скопировать ответ</button>
+          <button type="button" id="download-answer" class="button secondary-button">Скачать .txt</button>
+        </div>
+        <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+        <details id="answer-fallback" hidden>
+          <summary>Открыть текст ответа</summary>
+          <label for="answer-text" class="field-help">Выделите текст и скопируйте вручную</label>
+          <textarea id="answer-text" readonly rows="12"></textarea>
+        </details>
+        <div class="draft-controls">
+          <span id="draft-status">Черновик сохраняется на устройстве</span>
+          <button id="clear-draft" type="button" class="text-button">Очистить черновик</button>
+        </div>
+      </form>
+      <div id="external-form" class="external-form" hidden></div>
+    </section>
+    <noscript><p class="wrap">Для досье и анкеты нужен JavaScript. Откройте сайт с включённым JavaScript; тексты миров также доступны в папке settings.</p></noscript>
+  </main>
+
+  <footer class="site-footer wrap">
+    <p>Наша следующая история начинается с выбора.</p>
+    <div><span>Для нашей игровой компании</span><a href="materials.html">Материалы для отбора</a><span>Вопросы и системы обсуждаем вместе</span></div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000">
+<title>Дверь, которой не было</title>
+<rect width="1000" height="1000" fill="#343d3b"/>
+<path d="M0 0H1000L720 280H280Z" fill="#4b5550"/><path d="M0 0 280 280V720L0 1000Z" fill="#505a54"/>
+<path d="M1000 0 720 280V720L1000 1000Z" fill="#232c2a"/><path d="M0 1000 280 720H720L1000 1000Z" fill="#1b2523"/>
+<path d="M0 155 280 330M0 360 280 425M0 655 280 570M1000 155 720 330M1000 360 720 425M1000 655 720 570" fill="none" stroke="#647068" stroke-width="4" opacity=".35"/>
+<rect x="280" y="280" width="440" height="440" fill="#151f1e"/>
+<rect x="373" y="315" width="254" height="405" fill="#a03636"/>
+<rect x="396" y="336" width="210" height="384" fill="#de594b"/>
+<path d="m396 720 210-384v384Z" fill="#ba3d37"/>
+<path d="M373 720h254l158 280H215Z" fill="#ac453b"/>
+<path d="m396 720 210 0 125 280H259Z" fill="#d45b49"/>
+<path d="M280 280v440M720 280v440" stroke="#7b8780" stroke-width="5"/>
+<rect x="460" y="232" width="80" height="9" fill="#d4e6a0"/>
+<path d="M0 855h1000M0 942h1000" stroke="#18231f" stroke-width="13"/>
+<ellipse cx="499" cy="681" rx="26" ry="8" fill="#782d2c"/>
+<circle cx="499" cy="579" r="16" fill="#242d29"/><path d="M480 602h38l9 62h-56Z" fill="#242d29"/><path d="m481 655-5 56m39-56 6 56" stroke="#242d29" stroke-width="10"/>
+</svg>

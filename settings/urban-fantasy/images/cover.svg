@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000">
+<title>Город знает ваше имя</title>
+<rect width="1000" height="1000" fill="#5d7971"/><circle cx="650" cy="260" r="164" fill="#c2d5ad"/>
+<path d="M0 300h160v-90h100v300h110V360h80v240h90V410h160V190h130v370h170v440H0Z" fill="#3d5851"/>
+<path d="M0 420h150v100h120v480H0Zm1000-20H850v120H735v480h265Z" fill="#203e39"/>
+<path d="M0 530h170v470H0Zm1000-10H840v480h160Z" fill="#142f2c"/>
+<path d="m270 1000 190-410h90l185 410Z" fill="#809b82"/>
+<path d="m430 1000 50-410h45l45 410Z" fill="#b3be93"/>
+<path d="M165 505h150v495h-45V590H165Zm675-20H690v515h45V590h105Z" fill="#2c4b43"/>
+<g fill="#d0ca93"><path d="M47 580h42v60H47Zm0 145h42v60H47Zm160-149h34v53h-34Zm0 110h34v53h-34Z"/><path d="M902 579h42v60h-42Zm0 145h42v60h-42Zm-141-152h35v56h-35Zm0 120h35v56h-35Z"/></g>
+<path d="M315 685h74v26h-74Z" fill="#cfad83"/><path d="M325 695v106" stroke="#152e29" stroke-width="10"/>
+<path d="M460 590v-56a45 45 0 0 1 90 0v56" fill="#162f2c"/>
+<path d="M477 590v-53a28 28 0 0 1 56 0v53" fill="#d0c895"/>
+<path d="M240 364q200 90 495-5" fill="none" stroke="#203e39" stroke-width="5"/>
+<g fill="#d0ca93"><circle cx="350" cy="399" r="5"/><circle cx="470" cy="404" r="5"/><circle cx="590" cy="389" r="5"/></g>
+<circle cx="518" cy="726" r="13" fill="#18352e"/><path d="m504 743-14 73h53l-11-73Z" fill="#18352e"/><path d="m506 810-7 53m29-53 6 53" stroke="#18352e" stroke-width="9"/>
+<path d="M0 927h265m470 0h265" stroke="#c3c5a2" stroke-width="5" opacity=".35"/>
+</svg>

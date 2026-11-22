@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000">
+<title>Город после заката</title>
+<rect width="1000" height="1000" fill="#503b3d"/><circle cx="590" cy="343" r="233" fill="#b85c59"/>
+<path d="M0 670h100v-90h90v130h100V530h100v170h180V583h90v70h115V520h110v150h115v330H0Z" fill="#392d32"/>
+<path d="M0 0h1000v1000H0Zm230 1000h540V445C770 240 595 113 500 66 405 113 230 240 230 445Z" fill="#25282a" fill-rule="evenodd"/>
+<path d="M500 66v934M230 445h540" stroke="#25282a" stroke-width="31"/>
+<path d="M500 182C360 280 332 365 332 445v555m168-818c140 98 168 183 168 263v555" fill="none" stroke="#25282a" stroke-width="24"/>
+<path d="M230 785h540v35H230Z" fill="#25282a"/>
+<path d="M0 914h1000v86H0Z" fill="#1b2223"/>
+<path d="M332 446h336M0 953h1000" stroke="#82716b" stroke-width="5" opacity=".4"/>
+<g fill="#ad9380"><path d="M113 652h15v27h-15Zm31 0h15v27h-15Zm159-75h17v28h-17Zm30 0h17v28h-17Zm274 62h17v28h-17Zm187-76h17v28h-17Zm30 0h17v28h-17Z"/></g>
+<path d="M593 875c-5-39-7-62-2-88 2-13 20-19 32-12 14 8 9 26 4 38l24 62Z" fill="#172022"/>
+<circle cx="612" cy="762" r="17" fill="#172022"/><path d="M590 831h44l-3 83h-50Z" fill="#172022"/>
+<path d="m540 914 55-55 45 55Z" fill="#172022"/>
+</svg>
