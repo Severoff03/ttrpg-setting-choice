@@ -7,13 +7,13 @@
   <meta name="description" content="Три мира для нашей следующей настольной ролевой игры. Прочитайте завязки, выберите атмосферу и расскажите, во что хочется сыграть.">
   <title>Выбор сеттинга — SCP, Wolf Among Us, Vampire</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=1ceb15660b">
+  <link rel="stylesheet" href="styles.css?v=a7d94b682f">
   <link rel="preload" href="assets/fonts/Onest-Variable.ttf" as="font" type="font/ttf" crossorigin>
   <script src="site.config.js?v=292b80ce52" defer></script>
   <script src="settings/anomalies/setting.js?v=34c35fe545" defer></script>
   <script src="settings/urban-fantasy/setting.js?v=61e4d1903d" defer></script>
   <script src="settings/vampire/setting.js?v=78ae1b7093" defer></script>
-  <script src="app.js?v=7a2d8608d5" defer></script>
+  <script src="app.js?v=f83d076605" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">К содержимому</a>
@@ -63,8 +63,8 @@
           <p id="scale-help" class="field-help">От 1 — совсем не интересно, до 10 — очень хочу сыграть. Передвиньте ползунок, чтобы поставить оценку.</p>
           <div id="interest-list"></div>
         </fieldset>
-        <section id="bureau-reminder" class="bureau-reminder" aria-label="Выбор бюро SCP Foundation" data-ui></section>
-        <p id="bureau-confirmation" class="bureau-confirmation" role="status" aria-live="polite" hidden></p>
+        <section id="question-reminders" aria-label="Пропущенные вопросы о сеттингах"></section>
+        <p id="questions-confirmation" class="questions-confirmation" role="status" aria-live="polite" hidden></p>
         <div class="field">
           <label for="wishes">Что особенно хочется увидеть?</label>
           <textarea id="wishes" name="wishes" rows="3" maxlength="3000" placeholder="Сцены, персонажи, любимые референсы…"></textarea>

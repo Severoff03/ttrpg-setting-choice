@@ -343,17 +343,17 @@ h4 {
 .bureau-inline {
   margin-top:28px
 }
-.bureau-reminder {
+.question-reminder {
   margin-bottom:28px;
   padding:22px;
   background:var(--surface);
   border-radius:4px
 }
-.bureau-reminder h3 {
+.question-reminder h3 {
   margin-bottom:16px;
   font-size:20px
 }
-.bureau-confirmation {
+.questions-confirmation {
   margin-bottom:26px;
   color:var(--muted);
   font-size:14px
@@ -1156,7 +1156,7 @@ input[type=range]::-moz-range-progress {
   .story-chapter {
     margin-top:34px
   }
-  .bureau-reminder {
+  .question-reminder {
     padding:20px 16px
   }
   .bureau-list>div {

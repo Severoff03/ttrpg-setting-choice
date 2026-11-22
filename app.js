@@ -110,7 +110,7 @@
         const world = campaigns.find(item => item.id === input.dataset.campaignId);
         const choice = world?.choices.find(item => item.id === input.dataset.preference);
         if (!choice || !choice.options.some(option => option.value === input.value)) return;
-        const editingReminder = byId("bureau-reminder").contains(input);
+        const editingReminder = input.closest("[data-reminder-world]");
         if (!state.choices[world.id] || typeof state.choices[world.id] !== "object") state.choices[world.id] = {};
         const values = new Set(selectedOptions(world, choice).map(option => option.value));
         if (input.checked) values.add(input.value); else values.delete(input.value);
@@ -124,32 +124,30 @@
           const note = byId(control.dataset.noteId);
           if (note) note.textContent = choiceNote(selected);
         });
-        // Let players finish marking several options in the lower reminder.
-        // A selection made in the world description hides the duplicate below.
-        if (choice.id === "bureau" && !editingReminder) {
-          renderBureauReminder();
-        }
-        if (editingReminder) byId("confirm-bureau").disabled = selectedOptions(world, choice).length === 0;
+        // Keep lower questions in place while players mark multiple options.
+        // Answers made in a setting description immediately remove its duplicate.
+        if (!editingReminder) renderUnansweredQuestions();
+        else editingReminder.querySelector(".confirm-reminder").disabled = ![...editingReminder.querySelectorAll("input[data-preference]")].some(control => control.checked);
         invalidateExport();
         save();
       });
     });
   }
 
-  function renderBureauReminder() {
-    const world = campaigns.find(item => item.id === "anomalies");
-    const choice = world?.choices.find(item => item.id === "bureau");
-    const container = byId("bureau-reminder");
-    const confirmation = byId("bureau-confirmation");
-    const selected = choice ? selectedOptions(world, choice) : [];
-    container.hidden = !choice || selected.length > 0;
-    confirmation.hidden = selected.length === 0;
-    confirmation.textContent = selected.length ? `SCP Foundation: ${selected.map(option => option.label).join("; ")}` : "";
-    container.replaceChildren();
-    if (!choice || selected.length) return;
-    container.innerHTML = `<h3>SCP Foundation</h3>${renderChoice(world, choice, "reminder")}<button type="button" id="confirm-bureau" class="button secondary-button" disabled>Готово</button>`;
+  function renderUnansweredQuestions() {
+    const container = byId("question-reminders");
+    const confirmation = byId("questions-confirmation");
+    const pending = campaigns.map(world => ({ world, choices: world.choices.filter(choice => !selectedOptions(world, choice).length) })).filter(group => group.choices.length);
+    container.hidden = pending.length === 0;
+    confirmation.hidden = pending.length > 0;
+    confirmation.textContent = pending.length ? "" : "Все вопросы о сеттингах заполнены.";
+    container.innerHTML = pending.map(({ world, choices }) => `<section class="question-reminder" data-reminder-world="${escape(world.id)}" aria-labelledby="reminder-title-${escape(world.id)}" data-ui><h3 id="reminder-title-${escape(world.id)}">${escape(world.title)}</h3>${choices.map(choice => renderChoice(world, choice, "reminder")).join("")}<button type="button" class="button secondary-button confirm-reminder" disabled>Готово</button></section>`).join("");
     bindPreferences(container);
-    byId("confirm-bureau").addEventListener("click", () => { renderBureauReminder(); byId("wishes").focus(); });
+    container.querySelectorAll(".confirm-reminder").forEach(button => button.addEventListener("click", () => {
+      renderUnansweredQuestions();
+      const nextQuestion = container.querySelector("input[data-preference]");
+      (nextQuestion || byId("wishes")).focus();
+    }));
   }
 
   function renderAtmosphereArt(art, className = "") {
@@ -218,7 +216,7 @@
     setupAtmosphere(content);
     observeEntrances(content);
     bindPreferences(content);
-    renderBureauReminder();
+    renderUnansweredQuestions();
     content.querySelectorAll(".material-image img").forEach((image) => image.addEventListener("error", () => {
       const notice = document.createElement("p");
       notice.className = "field-help";
