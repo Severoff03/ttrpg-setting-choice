@@ -411,9 +411,9 @@
   .dossier-reading {margin-inline:-16px;padding-inline:16px}
   .dossier-title-row h2 {font-size:42px}
 }
-@media(max-width:760px) and (max-height:540px) and (orientation:landscape) {
+@media(max-width:1000px) and (max-height:540px) and (orientation:landscape) {
   .world-list {grid-template-columns:repeat(3,minmax(0,1fr))}
-  .world-image {height:calc(100svh - 125px)}
+  .world-image {height:calc(100svh - 150px)}
   .world-caption {inset:0 12px 16px;align-items:end}
   .world-title,.world[data-setting=urban-fantasy] .world-title {font-size:20px}
   .world[data-setting=vampire] .world-title {font-size:25px}
