@@ -13,13 +13,25 @@ window.CAMPAIGNS.push({
   videoCreditUrl: "https://www.youtube.com/watch?v=6EZCBSsBxko",
   backgroundVideo: "settings/urban-fantasy/videos/bright-atmosphere.mp4",
   atmosphereArt: [
-    { src: "settings/urban-fantasy/images/urban-human-and-orc.webp", alt: "Человек и орк работают напарниками в современной полиции", credit: "Bright · Netflix · референс городского фэнтези", url: "https://www.youtube.com/watch?v=6EZCBSsBxko" },
-    { src: "settings/urban-fantasy/images/urban-fantasy-street.webp", alt: "Уличное сообщество фантастических существ в современном городе", credit: "Bright · Netflix · референс городского фэнтези", url: "https://www.youtube.com/watch?v=6EZCBSsBxko" },
+    { src: "settings/urban-fantasy/images/wolf-night-city.jpg", width: 600, height: 337, alt: "Ночная улица с жёлтым такси из первой The Wolf Among Us", credit: "The Wolf Among Us · Telltale Games", url: "https://store.steampowered.com/app/250320/" },
+    { src: "settings/urban-fantasy/images/references/wolf-characters.webp", width: 1280, height: 720, alt: "Бигби и Снежка разговаривают в квартире в The Wolf Among Us", credit: "The Wolf Among Us · Telltale Games", url: "https://store.steampowered.com/app/250320/" },
+    { src: "settings/urban-fantasy/images/wolf-fables-office.jpg", width: 600, height: 337, alt: "Волшебный кабинет с деревом, книгами и сказочными артефактами в The Wolf Among Us", credit: "The Wolf Among Us · Telltale Games", url: "https://store.steampowered.com/app/250320/" },
   ],
   hook: "У этого города две стороны. Вы знаете дорогу между ними.",
-  premise: ["—"],
+  premise: ["История будет происходить в одном городе. Каким он будет, выберем вместе."],
   story: "—",
   choices: [
+    { id: "city", label: "В каком городе хотите играть?", options: [
+      { value: "russian-anonymous", label: "Безымянный российский город", note: "Выдуманный город в России: создадим его районы и историю вместе." },
+      { value: "american-anonymous", label: "Безымянный американский город", note: "Выдуманный город в США со своими районами, тайнами и сообществами." },
+      { value: "american-specific", label: "Конкретный город США", note: "Название города можно написать в пожеланиях к игре." },
+      { value: "moscow", label: "Москва", note: "Магическая сторона знакомого большого города." },
+    ] },
+    { id: "team", label: "Кем хотите быть?", options: [
+      { value: "police", label: "Частью полиции", note: "Команда внутри полиции: дела, полномочия и ответственность перед городом." },
+      { value: "agency", label: "Независимым агентством", note: "Своя команда, клиенты и свобода выбирать, за какие дела браться." },
+      { value: "gang", label: "Бандитской группировкой", note: "Уличные связи, своя территория и жизнь по ту сторону закона." },
+    ] },
     { id: "magic", label: "Окружающие знают о магии и фэнтезийных существах?", options: [
       { value: "hidden", label: "Нет, это тайна", note: "Магия и необычные существа скрываются от обычных людей." },
       { value: "revealed", label: "Да, знают", note: "Магия и фэнтезийные существа — известная часть мира." },

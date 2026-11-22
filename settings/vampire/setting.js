@@ -17,8 +17,15 @@ window.CAMPAIGNS.push({
     "В современном Мире Тьмы существует 14 вампирских кланов. Их представители различаются традициями, слабостями и наборами сверхъестественных способностей — Дисциплин. Одни подчиняют чужую волю, другие меняют облик или обладают нечеловеческой силой. Клан определяет многое, но не решает за персонажа, кем ему быть.",
     "Вампирское общество скрыто от мира людей. Этот секрет называют Маскарадом: обычные горожане не должны узнать, кто живёт рядом с ними. При этом вампиры сильно влияют на человеческий мир — через деньги, политику, бизнес, личные связи и тех, кто выполняет их волю. За привычной жизнью города идёт другая: борьба за власть, территории и право пережить следующую ночь.",
   ],
-  story: "—",
-  choices: [],
+  story: "Действие нашей хроники будет ограничено одним городом. Каким именно — выберем вместе.",
+  choices: [
+    { id: "city", label: "В каком городе хотите играть?", options: [
+      { value: "russian-anonymous", label: "Безымянный российский город", note: "Выдуманный город в России: вместе определим его ночную жизнь и местных вампиров." },
+      { value: "american-anonymous", label: "Безымянный американский город", note: "Выдуманный город в США со своей вампирской иерархией." },
+      { value: "american-specific", label: "Конкретный город США", note: "Название города можно написать в пожеланиях к игре." },
+      { value: "moscow", label: "Москва", note: "Ночная Москва и её скрытое вампирское общество." },
+    ] },
+  ],
   system: {
     name: "Vampire: The Masquerade",
     status: "Предлагаемая редакция — V5; окончательно согласуем",
@@ -33,8 +40,8 @@ window.CAMPAIGNS.push({
   ],
   backgroundVideo: "settings/vampire/videos/bloodlines2-atmosphere.mp4",
   atmosphereArt: [
-    { src: "settings/vampire/images/vampire-society.webp", alt: "Персонажи вампирского общества в ночном интерьере", credit: "Bloodlines 2 · Paradox Interactive / The Chinese Room", url: "https://www.youtube.com/watch?v=pjPWT0M7AOM" },
-    { src: "settings/vampire/images/vampire-night-street.webp", alt: "Тёмный городской переулок с ночным освещением", credit: "Bloodlines 2 · Paradox Interactive / The Chinese Room", url: "https://www.youtube.com/watch?v=pjPWT0M7AOM" },
+    { src: "settings/vampire/images/vampire-society.webp", width: 960, height: 540, alt: "Персонажи вампирского общества в ночном интерьере", credit: "Bloodlines 2 · Paradox Interactive / The Chinese Room", url: "https://www.youtube.com/watch?v=pjPWT0M7AOM" },
+    { src: "settings/vampire/images/vampire-night-street.webp", width: 960, height: 540, alt: "Тёмный городской переулок с ночным освещением", credit: "Bloodlines 2 · Paradox Interactive / The Chinese Room", url: "https://www.youtube.com/watch?v=pjPWT0M7AOM" },
   ],
   images: [],
   videos: [],

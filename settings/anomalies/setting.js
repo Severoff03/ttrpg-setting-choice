@@ -45,13 +45,19 @@ window.CAMPAIGNS.push({
   // Медиа не подключаются автоматически. Добавляйте свои файлы в images/, videos/, texts/.
   // Пример картинки: { src: "settings/anomalies/images/hall.jpg", alt: "Описание", caption: "Подпись" }
   backgroundVideo: "settings/anomalies/videos/scp-field-montage.mp4",
+  backgroundPoster: {
+    src: "settings/anomalies/images/scp-field-montage.webp",
+    alt: "Оперативники SCP выдвигаются через лес в фильме OVERLORD",
+    credit: "SCP: OVERLORD · Evan Royalty / Stephen Hancock · CC BY-SA 3.0",
+    url: "https://www.youtube.com/watch?v=EOxarwd3eTs",
+  },
   videoSources: [
     { title: "SCP: OVERLORD", url: "https://www.youtube.com/watch?v=EOxarwd3eTs" },
     { title: "SCP: Dollhouse", url: "https://www.youtube.com/watch?v=xVx2jyDPinw" },
   ],
   atmosphereArt: [
-    { src: "settings/anomalies/images/scp-team-entry.webp", alt: "Оперативная группа SCP проверяет помещение при входе в здание", credit: "SCP: OVERLORD · Evan Royalty / Stephen Hancock · CC BY-SA 3.0", url: "https://www.youtube.com/watch?v=EOxarwd3eTs" },
-    { src: "settings/anomalies/images/scp-agent-interior.webp", alt: "Оперативник Фонда в экипировке внутри здания", credit: "SCP: Dollhouse · Evan Royalty / Stephen Hancock · CC BY-SA 3.0", url: "https://www.youtube.com/watch?v=xVx2jyDPinw" },
+    { src: "settings/anomalies/images/scp-team-entry.webp", width: 960, height: 402, alt: "Оперативная группа SCP проверяет помещение при входе в здание", credit: "SCP: OVERLORD · Evan Royalty / Stephen Hancock · CC BY-SA 3.0", url: "https://www.youtube.com/watch?v=EOxarwd3eTs" },
+    { src: "settings/anomalies/images/scp-agent-interior.webp", width: 960, height: 402, alt: "Оперативник Фонда в экипировке внутри здания", credit: "SCP: Dollhouse · Evan Royalty / Stephen Hancock · CC BY-SA 3.0", url: "https://www.youtube.com/watch?v=xVx2jyDPinw" },
   ],
   images: [],
   // Пример видео: { src: "settings/anomalies/videos/trailer.mp4", title: "Настроение игры", poster: "settings/anomalies/images/poster.jpg" }
