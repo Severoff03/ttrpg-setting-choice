@@ -258,6 +258,11 @@
     const primaryArt = allArt.length ? [allArt[Math.min(2, allArt.length - 1)]] : [];
     const additionalArt = allArt;
     const scrollScenes = world.scrollBackgrounds || [];
+    const sceneInterlude = index => {
+      const art = scrollScenes[index];
+      if (!art) return "";
+      return `<figure class="scene-interlude"><img src="${escape(art.src)}" alt="${escape(art.alt)}" width="${Number(art.width)||1200}" height="${Number(art.height)||800}" loading="lazy" decoding="async"><figcaption>${externalLink(art.url, art.credit)}</figcaption></figure>`;
+    };
     const poster = world.backgroundPoster || { src: world.cover, alt: world.coverAlt, credit: world.credit, url: world.creditUrl };
     const content = document.createElement("article");
     content.className = "setting-page";
@@ -280,7 +285,7 @@
           ${primaryArt.map(art => `<img class="reading-backdrop" src="${escape(art.src)}" alt="" width="${Number(art.width)||1200}" height="${Number(art.height)||800}" loading="lazy" aria-hidden="true">`).join("")}
           <div class="reading-shade" aria-hidden="true"></div>
           <div class="world-copy">
-            <section class="dossier-block world-description"><h3>О мире</h3>${world.premise.map(renderPremise).join("")}${worldChoices.map(choice => renderChoice(world, choice)).join("")}${world.bureaus ? `<dl class="bureau-list">${world.bureaus.map(bureau => `<div><dt>${escape(bureau.title)}</dt><dd>${escape(bureau.description)}</dd></div>`).join("")}</dl>` : ""}${bureauChoice ? `<div class="bureau-inline">${renderChoice(world, bureauChoice)}</div>` : ""}</section>
+            <section class="dossier-block world-description"><h3>О мире</h3>${world.premise.map((text,index) => renderPremise(text) + (index === Math.min(1,world.premise.length - 1) ? sceneInterlude(0) : "")).join("")}${sceneInterlude(1)}${worldChoices.map(choice => renderChoice(world, choice)).join("")}${world.bureaus ? `<dl class="bureau-list">${world.bureaus.map(bureau => `<div><dt>${escape(bureau.title)}</dt><dd>${escape(bureau.description)}</dd></div>`).join("")}</dl>` : ""}${bureauChoice ? `<div class="bureau-inline">${renderChoice(world, bureauChoice)}</div>` : ""}${sceneInterlude(2)}</section>
             ${cityChoices.length ? `<section class="dossier-block city-chapter" aria-label="Выбор города">${cityChoices.map(choice => renderChoice(world, choice)).join("")}</section>` : ""}
             <section class="dossier-block story-chapter"><h3>Ваша история</h3>${world.story || !storyChoices.length ? `<p>${escape(world.story || "—")}</p>` : ""}${storyChoices.map(choice => renderChoice(world, choice)).join("")}</section>
             ${otherChoices.length ? `<section class="preferences" aria-label="Пожелания к миру">${otherChoices.map((choice) => renderChoice(world, choice)).join("")}</section>` : ""}
@@ -318,7 +323,7 @@
       const rect = stage.getBoundingClientRect();
       const distance = Math.max(1, rect.height - innerHeight);
       const progress = Math.max(0, Math.min(1, -rect.top / distance));
-      const index = preference.matches ? 0 : Math.min(scenes.length - 1, Math.floor(progress * scenes.length));
+      const index = Math.min(scenes.length - 1, Math.floor(progress * scenes.length));
       if (index === active) return;
       active = index;
       stage.dataset.activeScene = String(index);

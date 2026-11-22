@@ -591,3 +591,64 @@
   }
   .scroll-scene.is-active {opacity:.5}
 }
+
+/* The three SCP references stay vivid beside the report on wide screens.
+   On narrow screens they become full-width images between its paragraphs. */
+.scene-interlude {
+  display:none
+}
+.setting-page[data-setting=anomalies] .scroll-scene {
+  inset:0 0 0 auto;
+  width:62%;
+  object-position:55% center
+}
+.setting-page[data-setting=anomalies] .scroll-scene.is-active {
+  opacity:1
+}
+.setting-page[data-setting=anomalies] .world-copy {
+  width:54%
+}
+.setting-page[data-setting=anomalies] .reading-shade {
+  /* taste-skill-ignore: a paper scrim only under the overprinted report text. */
+  background:linear-gradient(90deg,var(--setting-bg) 44%,rgba(231,230,221,.98) 51%,rgba(231,230,221,.9) 55%,rgba(231,230,221,.22) 65%,rgba(231,230,221,0) 78%),linear-gradient(var(--setting-bg),transparent 12%,transparent 88%,var(--setting-bg)) /* taste-skill-ignore */
+}
+.setting-page[data-setting=anomalies] .scene-credit {
+  padding:8px 12px;
+  background:var(--setting-bg);
+  font-size:14px
+}
+@media(min-width:1001px) {
+  .scene-interlude + p {
+    margin-top:16px
+  }
+}
+@media(max-width:1000px) {
+  .setting-page[data-setting=anomalies] :is(.scroll-scenes,.reading-shade,.scene-credit) {
+    display:none
+  }
+  .setting-page[data-setting=anomalies] .world-copy {
+    width:100%;
+    max-width:680px;
+    margin-inline:auto
+  }
+  .scene-interlude {
+    display:block;
+    width:100vw;
+    margin-block:32px 40px;
+    margin-inline:calc((100% - 100vw)/2)
+  }
+  .scene-interlude img {
+    display:block;
+    width:100%;
+    height:auto
+  }
+  .scene-interlude figcaption {
+    margin:12px max(20px,calc((100vw - 680px)/2)) 0;
+    color:#4e5753;
+    font-size:14px;
+    line-height:1.5
+  }
+  .scene-interlude figcaption a {
+    text-decoration:none
+  }
+}
