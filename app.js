@@ -455,26 +455,50 @@
     captureForm();
   });
   form.addEventListener("change", captureForm);
+  let sendingAnswer = false;
+  let playerToken = "";
+  try { playerToken = localStorage.getItem("setting-choice-player-token-v1") || ""; } catch {}
+  async function sendAnswer() {
+    const api = safeUrl(window.SITE_CONFIG?.feedbackApiUrl);
+    if (!api) throw new Error("Приём ответов ещё не настроен. Скачайте ответ и пришлите ведущему.");
+    const values = formValues();
+    const payload = {
+      name: values.playerName.trim(),
+      ratings: Object.fromEntries(campaigns.map(world => [world.id, values[`interest-${world.id}`] ? Number(values[`interest-${world.id}`]) : null])),
+      questions: campaigns.flatMap(world => world.choices.map(choice => ({world: world.title, id: choice.id, label: choice.label, answer: answerLabel(world, choice), answered: Boolean(answered(world, choice))}))),
+      wishes: values.wishes.trim(), boundaries: values.boundaries.trim(),
+    };
+    const post = async (path, body) => {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 20000);
+      try {
+        const response = await fetch(new URL(path, api), {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),signal:controller.signal,credentials:"omit"});
+        const data = await response.json();
+        if (!response.ok) { const error = new Error(data.error || "Не удалось отправить ответ."); error.status = response.status; throw error; }
+        return data;
+      } finally { clearTimeout(timeout); }
+    };
+    const session = async () => { playerToken = (await post("/api/session", {})).token; try { localStorage.setItem("setting-choice-player-token-v1", playerToken); } catch {} };
+    if (!playerToken) await session();
+    try { await post("/api/answers", {token:playerToken,payload}); }
+    catch(error) { if(error.status !== 401) throw error; await session(); await post("/api/answers", {token:playerToken,payload}); }
+  }
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    if (!validForm()) return;
+    if (sendingAnswer || !validForm()) return;
     captureForm();
-    const answer = generateAnswer();
     const revision = exportRevision;
+    const button = form.querySelector('button[type="submit"]');
+    sendingAnswer = true;
+    button.disabled = true;
+    button.textContent = "Отправка…";
+    byId("form-status").textContent = "Сохраняем ответ…";
     try {
-      if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
-      await navigator.clipboard.writeText(answer);
-      if (revision !== exportRevision) return;
-      byId("form-status").textContent = "Ответ скопирован. Теперь пришлите его ведущему в личные сообщения.";
-    } catch {
-      if (revision !== exportRevision) return;
-      byId("answer-fallback").hidden = false;
-      byId("answer-fallback").open = true;
-      byId("answer-text").value = answer;
-      byId("answer-text").focus();
-      byId("answer-text").select();
-      byId("form-status").textContent = "Автокопирование недоступно. Скопируйте выделенный текст или скачайте .txt.";
-    }
+      await sendAnswer();
+      byId("form-status").textContent = revision === exportRevision ? "Ответ отправлен ведущему. Повторная отправка обновит его." : "Предыдущая версия отправлена. Отправьте ещё раз, чтобы сохранить изменения.";
+    } catch(error) {
+      byId("form-status").textContent = error.name === "AbortError" ? "Сервис не ответил. Попробуйте ещё раз; черновик сохранён." : (error instanceof TypeError ? "Нет связи с сервисом. Попробуйте ещё раз или скачайте .txt; черновик сохранён." : error.message);
+    } finally { sendingAnswer = false; button.disabled = false; button.textContent = "Отправить ответ"; }
   });
   byId("download-answer").addEventListener("click", () => {
     if (!validForm()) return;
