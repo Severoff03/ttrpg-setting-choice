@@ -13,29 +13,24 @@ window.CAMPAIGNS.push({
   videoCreditUrl: "https://www.youtube.com/watch?v=6EZCBSsBxko",
   backgroundVideo: "settings/urban-fantasy/videos/bright-atmosphere.mp4",
   atmosphereArt: [
-    { src: "settings/urban-fantasy/images/references/wolf-characters.webp", alt: "Персонажи сказочного сообщества в напряжённой сцене разговора", credit: "The Wolf Among Us · Telltale Games", url: "https://store.steampowered.com/app/250320/" },
-    { src: "settings/urban-fantasy/images/references/wolf-interior.webp", alt: "Нуарный интерьер с тёплым светом и глубокими тенями", credit: "The Wolf Among Us · Telltale Games", url: "https://store.steampowered.com/app/250320/" },
+    { src: "settings/urban-fantasy/images/urban-human-and-orc.webp", alt: "Человек и орк работают напарниками в современной полиции", credit: "Bright · Netflix · референс городского фэнтези", url: "https://www.youtube.com/watch?v=6EZCBSsBxko" },
+    { src: "settings/urban-fantasy/images/urban-fantasy-street.webp", alt: "Уличное сообщество фантастических существ в современном городе", credit: "Bright · Netflix · референс городского фэнтези", url: "https://www.youtube.com/watch?v=6EZCBSsBxko" },
   ],
   hook: "У этого города две стороны. Вы знаете дорогу между ними.",
   premise: ["—"],
   story: "—",
   choices: [
-    { id: "focus", label: "На что сделать упор?", options: [
-      { value: "detective", label: "Расследование", note: "Разговоры, улики и дела, у которых нет удобных ответов." },
-      { value: "diplomacy", label: "Договоры и интриги", note: "Закрытые сообщества, личные долги и цена обещаний." },
-      { value: "expedition", label: "Опасные вылазки", note: "Исследование неизвестного и командные операции." },
-    ] },
-    { id: "magic", label: "Насколько открыта магия?", options: [
-      { value: "hidden", label: "Тайна для большинства", note: "Сохранить секрет бывает важнее, чем победить в открытом столкновении." },
-      { value: "revealed", label: "Мир уже знает", note: "Обществу приходится договариваться с тем, что недавно считалось сказкой." },
+    { id: "magic", label: "Окружающие знают о магии и фэнтезийных существах?", options: [
+      { value: "hidden", label: "Нет, это тайна", note: "Магия и необычные существа скрываются от обычных людей." },
+      { value: "revealed", label: "Да, знают", note: "Магия и фэнтезийные существа — известная часть мира." },
     ] },
   ],
   system: {
-    name: "Fate Condensed",
-    status: "Предварительное предложение",
-    description: "Аспекты описывают персонажа, его природу, связи и неприятности. Конфликты поддерживают не только драки, но и напряжённые переговоры. Система пока предложена для обсуждения; окончательно выберем её после того, как определимся с игрой.",
-    url: "https://fate-srd.com/fate-condensed",
-    linkLabel: "Открыть правила Fate Condensed",
+    name: "Daggerheart",
+    status: "Система для нашей игры",
+    description: "Играем на Daggerheart, адаптируя персонажей и способности под городское фэнтези. Правила и создание персонажей разберём вместе перед началом.",
+    url: "https://www.daggerheart.com/",
+    linkLabel: "Открыть Daggerheart",
   },
   references: [
     { title: "The Wolf Among Us", url: "https://www.telltale.com/the-wolf-among-us/", note: "Для нуара: сказочные герои, закрытое сообщество и морально сложный детектив." },

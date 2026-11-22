@@ -53,16 +53,14 @@
     byId("world-list").innerHTML = campaigns.map((world) => `
       <article class="world">
         <a href="?world=${escape(world.id)}#dossier" class="world-open" data-world="${escape(world.id)}" aria-current="${world.id === state.active}">
-          <div class="world-image"><img src="${escape(world.cover)}" alt="${escape(world.coverAlt)}" width="1200" height="800" fetchpriority="${world.id === campaigns[0].id ? "high" : "auto"}"><span class="world-open-label">Открыть досье</span></div>
+          <div class="world-image"><img src="${escape(world.cover)}" alt="${escape(world.coverAlt)}" width="${Number(world.coverWidth) || 1200}" height="${Number(world.coverHeight) || 800}" fetchpriority="${world.id === campaigns[0].id ? "high" : "auto"}"></div>
           <div class="world-caption">
-            <h2 class="world-title">${escape(world.title)}</h2>
+            <h2 class="world-title"><span>${escape(world.title)}</span></h2>
             <p>${escape(world.cardText)}</p>
             <span class="world-genre">${escape(world.genre)}</span>
           </div>
         </a>
       </article>`).join("");
-    byId("world-switcher").innerHTML = campaigns.map((world) => `
-      <button type="button" class="switch-button" data-world="${escape(world.id)}" aria-pressed="${world.id === state.active}" aria-controls="dossier-content">${escape(world.shortTitle)}</button>`).join("");
   }
 
   function selectedOption(world, choice) {
@@ -151,7 +149,7 @@
     content.querySelectorAll("video").forEach(video => video.pause());
     content.classList.remove("dossier-refresh");
     content.innerHTML = `
-      <div class="dossier-title-row"><h3>${escape(world.title)}</h3><span>${escape(world.genre)}</span></div>
+      <div class="dossier-title-row"><h2>${escape(world.title)}</h2><span>${escape(world.genre)}</span></div>
       <div class="dossier-visual">
         <img class="dossier-art" src="${escape(world.cover)}" alt="${escape(world.coverAlt)}" width="1200" height="480" loading="lazy">
         ${world.backgroundVideo ? `<video class="atmosphere-video" loop muted playsinline preload="none" poster="${escape(world.cover)}" aria-hidden="true" tabindex="-1"><source src="${escape(world.backgroundVideo)}" type="video/mp4"></video><button type="button" class="video-toggle" aria-pressed="false">Включить атмосферу</button>` : ""}
@@ -160,11 +158,10 @@
       <div class="dossier-chapters">
         <div class="world-chapter">
           <section class="dossier-block world-description"><h4>О мире</h4>${world.premise.map((text) => `<p>${escape(text)}</p>`).join("")}${world.bureaus ? `<dl class="bureau-list">${world.bureaus.map(bureau => `<div><dt>${escape(bureau.title)}</dt><dd>${escape(bureau.description)}</dd></div>`).join("")}</dl>` : ""}${bureauChoice ? `<div class="bureau-inline">${renderChoice(world, bureauChoice)}</div>` : ""}</section>
-          ${renderAtmosphereArt(world.atmosphereArt?.[0])}
         </div>
+        ${world.atmosphereArt?.length ? `<div class="chapter-gallery" aria-label="Иллюстрации мира">${world.atmosphereArt.map(art => renderAtmosphereArt(art)).join("")}</div>` : ""}
         <div class="world-chapter story-chapter">
           <section class="dossier-block"><h4>Ваша история</h4><p>${escape(world.story || "—")}</p></section>
-          ${renderAtmosphereArt(world.atmosphereArt?.[1])}
         </div>
         ${otherChoices.length ? `<section class="preferences" aria-label="Пожелания к миру"><h4>Настроим под нас</h4><p>Это пожелания, а не готовый договор. Можно не выбирать.</p>${otherChoices.map((choice) => renderChoice(world, choice)).join("")}</section>` : ""}
         ${renderMaterials(world)}
@@ -180,7 +177,6 @@
       const selected = element.dataset.world === world.id;
       element.setAttribute(element.tagName === "BUTTON" ? "aria-pressed" : "aria-current", String(selected));
     });
-    byId("world-select").value = world.id;
     setupAtmosphere(content);
     bindPreferences(content);
     renderBureauReminder();
@@ -396,15 +392,6 @@
   setupExternalForm();
   save();
 
-  byId("world-select").addEventListener("change", () => {
-    state.active = byId("world-select").value;
-    renderDossier(false);
-    const url = new URL(location.href);
-    url.searchParams.set("world", state.active);
-    try { history.replaceState(null, "", url.href); } catch {}
-    save();
-  });
-
   document.querySelectorAll("[data-world]").forEach((control) => {
     control.addEventListener("click", (event) => {
       if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
@@ -430,6 +417,6 @@
         observer.unobserve(entry.target);
       }
     }, { threshold: 0.12 });
-    document.querySelectorAll(".dossier-top, .vote-intro, .feedback-form, .site-footer > p:first-child").forEach((element) => observer.observe(element));
+    document.querySelectorAll(".vote-intro, .feedback-form, .site-footer > p:first-child").forEach((element) => observer.observe(element));
   }
 })();

@@ -18,22 +18,7 @@ window.CAMPAIGNS.push({
     "Вампирское общество скрыто от мира людей. Этот секрет называют Маскарадом: обычные горожане не должны узнать, кто живёт рядом с ними. При этом вампиры сильно влияют на человеческий мир — через деньги, политику, бизнес, личные связи и тех, кто выполняет их волю. За привычной жизнью города идёт другая: борьба за власть, территории и право пережить следующую ночь.",
   ],
   story: "—",
-  choices: [
-    { id: "focus", label: "О чём будет хроника?", options: [
-      { value: "humanity", label: "Человечность", note: "Личные связи, голод и выбор между удобным и человеческим." },
-      { value: "politics", label: "Власть и интриги", note: "Сделки, кланы, территории и опасные покровители." },
-      { value: "streets", label: "Ночное выживание", note: "История молодой котерии на уровне улиц и собственного убежища." },
-    ] },
-    { id: "faction", label: "Где начнём?", options: [
-      { value: "camarilla", label: "В тени Камарильи", note: "Иерархия, формальные правила и покровительство с условиями." },
-      { value: "anarch", label: "Среди анархов", note: "Больше самостоятельности — и меньше тех, кто прикроет спину." },
-      { value: "undecided", label: "Без стороны", note: "Начнём с местной истории и познакомимся с фракциями в игре." },
-    ] },
-    { id: "lore", label: "Сколько лора на старте?", options: [
-      { value: "new", label: "Открываем мир вместе", note: "Недавно Обращённые герои; знания приходят через сцены." },
-      { value: "known", label: "Уже знаем правила ночи", note: "Котерия знакома с основами; сразу переходим к сложным решениям." },
-    ] },
-  ],
+  choices: [],
   system: {
     name: "Vampire: The Masquerade",
     status: "Предлагаемая редакция — V5; окончательно согласуем",
@@ -48,8 +33,8 @@ window.CAMPAIGNS.push({
   ],
   backgroundVideo: "settings/vampire/videos/bloodlines2-atmosphere.mp4",
   atmosphereArt: [
-    { src: "settings/vampire/images/references/vampire-gothic.webp", alt: "Вампирская готика на фоне ночного города", credit: "Vampire: The Masquerade — Bloodlines · Activision", url: "https://store.steampowered.com/app/2600/" },
-    { src: "settings/vampire/images/references/vampire-street.webp", alt: "Пустынная ночная улица с неоновыми вывесками", credit: "Vampire: The Masquerade — Bloodlines · Activision", url: "https://store.steampowered.com/app/2600/" },
+    { src: "settings/vampire/images/vampire-society.webp", alt: "Персонажи вампирского общества в ночном интерьере", credit: "Bloodlines 2 · Paradox Interactive / The Chinese Room", url: "https://www.youtube.com/watch?v=pjPWT0M7AOM" },
+    { src: "settings/vampire/images/vampire-night-street.webp", alt: "Тёмный городской переулок с ночным освещением", credit: "Bloodlines 2 · Paradox Interactive / The Chinese Room", url: "https://www.youtube.com/watch?v=pjPWT0M7AOM" },
   ],
   images: [],
   videos: [],
