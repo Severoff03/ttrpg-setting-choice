@@ -47,7 +47,7 @@ window.CAMPAIGNS.push({
   references: [
     { title: "The Wolf Among Us", url: "https://www.telltale.com/the-wolf-among-us/", note: "Для нуара: сказочные герои, закрытое сообщество и морально сложный детектив." },
     { title: "Bright", url: "https://www.youtube.com/watch?v=6EZCBSsBxko", note: "Альтернативный визуальный референс: современный город и сказочные существа. Это источник атмосферы, а не обязательный лор игры." },
-    { title: "Carnival Row", url: "https://www.youtube.com/watch?v=369LHB9N-Ro", note: "Сказочные переселенцы, городская жизнь и детектив; более исторический вариант городского фэнтези." },
+    { title: "Врата: там бьются наши воины", url: "https://a1p.jp/works/gate/", note: "Аниме о столкновении современного мира с магией и фэнтезийными существами. Ориентир по взаимодействию двух миров." },
   ],
   images: [],
   videos: [],
