@@ -424,3 +424,170 @@
   .redaction-marks span::after {transform:scaleX(1)}
   .blood-drips i {opacity:.7;transform:none}
 }
+
+/* Three supplied SCP images form one scene behind the document. */
+.has-scroll-scenes {
+  overflow:clip
+}
+.scroll-scenes {
+  position:absolute;
+  inset:0;
+  z-index:-3;
+  pointer-events:none
+}
+.scroll-scene-sticky {
+  position:sticky;
+  top:0;
+  height:100svh;
+  overflow:hidden
+}
+.scroll-scene {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:60% center;
+  opacity:0;
+  transition:opacity 850ms var(--ease-out)
+}
+.scroll-scene.is-active {
+  opacity:.55
+}
+.redacted-text {
+  position:relative;
+  display:inline-block;
+  vertical-align:bottom;
+  overflow:hidden;
+  max-width:100%;
+  white-space:nowrap;
+  line-height:1.35;
+  user-select:none
+}
+.redacted-text>span {
+  filter:blur(3.2px);
+  opacity:.45
+}
+.redacted-text::after {
+  content:'';
+  position:absolute;
+  inset:1px 0 0;
+  background:#0b0c0b;
+  transform-origin:left;
+  transform:scaleX(1)
+}
+.text-choice {
+  margin-top:26px
+}
+@media(prefers-reduced-motion:no-preference) {
+  .redacted-text.reveal::after {
+    animation:redact-line 1900ms var(--ease-out) both
+  }
+  .dossier-title-row:has(.reveal) .redaction-marks span::after {
+    animation-duration:1900ms
+  }
+}
+@keyframes redact-line {
+  from {transform:scaleX(.08)}
+  to {transform:scaleX(1)}
+}
+@media(prefers-reduced-motion:reduce) {
+  .scroll-scene {transition:none}
+  .redacted-text::after {transform:scaleX(1)}
+}
+
+/* Printed reports for SCP and Wolf; black and white for Vampire. */
+.setting-page {
+  --setting-bg:#e7e6dd;
+  --setting-ink:#222b2b;
+  --setting-accent:#263a35;
+  color:var(--setting-ink)
+}
+.setting-page[data-setting=urban-fantasy] {
+  --setting-bg:#e9d6ac;
+  --setting-ink:#342d23;
+  --setting-accent:#473722
+}
+.setting-page[data-setting=vampire] {
+  --setting-bg:#08090b;
+  --setting-ink:#f2f3f1;
+  --setting-accent:#f2f3f1
+}
+.setting-page .dossier-title-row h2 {
+  color:var(--setting-ink)
+}
+.setting-page:not([data-setting=vampire]) .hero-shade {
+  background:linear-gradient(180deg,transparent 28%,rgba(20,25,25,.05) 45%,var(--setting-bg) 91%) /* taste-skill-ignore */
+}
+.setting-page:not([data-setting=vampire]) .dossier-reading {
+  background:var(--setting-bg)
+}
+.setting-page:not([data-setting=vampire]) .reading-shade {
+  background:linear-gradient(90deg,var(--setting-bg) 6%,rgba(231,230,221,.97) 29%,rgba(231,230,221,.87) 53%,rgba(231,230,221,.25)),linear-gradient(var(--setting-bg),transparent 18%,transparent 82%,var(--setting-bg)) /* taste-skill-ignore */
+}
+.setting-page[data-setting=urban-fantasy] .reading-shade {
+  background:linear-gradient(90deg,var(--setting-bg) 7%,rgba(233,214,172,.97) 29%,rgba(233,214,172,.88) 53%,rgba(233,214,172,.35)),linear-gradient(var(--setting-bg),transparent 18%,transparent 82%,var(--setting-bg)) /* taste-skill-ignore */
+}
+.setting-page .world-copy :is(p,dd) {
+  color:var(--setting-ink)
+}
+.setting-page:not([data-setting=vampire]) :is(.art-caption,.scene-credit,.chapter-art figcaption) {
+  color:#4e5753
+}
+.setting-page:not([data-setting=vampire]) .choice-label {
+  background:rgba(255,255,255,.6);
+  color:var(--setting-ink)
+}
+.setting-page:not([data-setting=vampire]) .choice-label:has(input:checked) {
+  background:#283b35;
+  color:#fff
+}
+.setting-page:not([data-setting=vampire]) :is(input,textarea) {
+  color-scheme:light;
+  accent-color:#283b35
+}
+.setting-page:not([data-setting=vampire]) input[type=range]::-webkit-slider-runnable-track {
+  background:#a8aca0;
+  border-color:#6d786e
+}
+.setting-page:not([data-setting=vampire]) input[type=range]::-webkit-slider-thumb {
+  background:#283b35
+}
+.setting-page:not([data-setting=vampire]) input[type=range]::-moz-range-thumb {
+  background:#283b35
+}
+.setting-page:not([data-setting=vampire]) .tone-endpoints output,
+.setting-page:not([data-setting=vampire]) .scale-ticks {
+  color:#36473f
+}
+.setting-page .ref-list a {
+  color:var(--setting-accent)
+}
+.setting-page:not([data-setting=vampire]) :focus-visible {
+  outline-color:#29483a
+}
+.setting-page:not([data-setting=vampire]) .video-toggle {
+  color:#fff
+}
+.setting-page:not([data-setting=vampire]) .redaction-marks span {
+  color:#3c4740
+}
+.setting-page[data-setting=vampire] textarea {
+  background:#171a1c;
+  color:#fff;
+  border-color:#59605d
+}
+@media(hover:hover) and (pointer:fine) {
+  .setting-page:not([data-setting=vampire]) .choice-label:hover:not(:has(input:checked)) {
+    background:#fff
+  }
+}
+@media(max-width:760px) {
+  .setting-page:not([data-setting=vampire]) .reading-shade {
+    background:linear-gradient(90deg,rgba(231,230,221,.95),rgba(231,230,221,.87)),linear-gradient(var(--setting-bg),transparent 20%,var(--setting-bg)) /* taste-skill-ignore */
+  }
+  .setting-page[data-setting=urban-fantasy] .reading-shade {
+    background:linear-gradient(90deg,rgba(233,214,172,.95),rgba(233,214,172,.87)),linear-gradient(var(--setting-bg),transparent 20%,var(--setting-bg)) /* taste-skill-ignore */
+  }
+  .scroll-scene.is-active {opacity:.5}
+}

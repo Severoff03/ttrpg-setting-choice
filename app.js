@@ -2,6 +2,13 @@
   "use strict";
 
   const campaigns = window.CAMPAIGNS || [];
+  // A normal visit starts at the covers, even when mobile Safari restores an old scroll.
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  let interacted = false;
+  for (const type of ["pointerdown", "touchstart", "wheel", "keydown"]) window.addEventListener(type, () => { interacted = true; }, { once:true, passive:true });
+  const restoreOpening = () => { if (!interacted && (!location.hash || location.hash === "#main" || location.hash === "#worlds")) window.scrollTo({top:0,left:0,behavior:"instant"}); };
+  window.addEventListener("pageshow", event => { if (event.persisted) interacted = false; restoreOpening(); });
+  restoreOpening();
   const storageKey = "za-granyu-draft-v1";
   const byId = (id) => document.getElementById(id);
   const escape = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
@@ -27,7 +34,7 @@
 
   function observeEntrances(root) {
     if (!entranceObserver || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    root.querySelectorAll(".dossier-title-row h2, .dossier-title-row > span, .dossier-visual, .world-description > h3, .world-description > p, .bureau-list > div, .bureau-inline, .story-chapter, .chapter-art, .preferences, .dossier-end > section, .vote-intro > *, .feedback-form > .field, .rating-row, .site-footer > p:first-child").forEach(element => entranceObserver.observe(element));
+    root.querySelectorAll(".dossier-title-row h2, .dossier-title-row > span, .dossier-visual, .world-description > h3, .world-description > p, .bureau-list > div, .bureau-inline, .story-chapter, .chapter-art, .preferences, .dossier-end > section, .vote-intro > *, .feedback-form > .field, .rating-row, .redacted-text, .site-footer > p:first-child").forEach(element => entranceObserver.observe(element));
   }
 
   try {
@@ -44,6 +51,10 @@
     if (!state.choices[world.id] || typeof state.choices[world.id] !== "object") continue;
     for (const choice of world.choices) {
       const saved = state.choices[world.id][choice.id];
+      if (choice.type === "text") {
+        state.choices[world.id][choice.id] = typeof saved === "string" ? saved.slice(0,1000) : "";
+        continue;
+      }
       if (choice.type === "scale") {
         if (!/^(10|[1-9])$/.test(String(saved))) delete state.choices[world.id][choice.id];
         continue;
@@ -91,10 +102,12 @@
   }
 
   function answered(world, choice) {
+    if (choice.type === "text") return Boolean(String(state.choices[world.id]?.[choice.id] || "").trim());
     return choice.type === "scale" ? /^(10|[1-9])$/.test(String(state.choices[world.id]?.[choice.id])) : selectedOptions(world, choice).length > 0;
   }
 
   function answerLabel(world, choice) {
+    if (choice.type === "text") return String(state.choices[world.id]?.[choice.id] || "").trim() || "Обсудим вместе";
     if (choice.type === "scale") {
       const value = state.choices[world.id]?.[choice.id];
       return answered(world, choice) ? `${value} / 10 (${choice.minLabel} → ${choice.maxLabel})` : "Обсудим вместе";
@@ -109,6 +122,10 @@
   }
 
   function renderChoice(world, choice, location = "dossier") {
+    if (choice.type === "text") {
+      const id = `pref-${world.id}-${choice.id}-${location}`;
+      return `<fieldset class="choice-group text-choice" data-ui><legend><label for="${id}">${escape(choice.label)}</label></legend><textarea id="${id}" name="${id}" rows="3" maxlength="1000" placeholder="${escape(choice.placeholder || "Ваш вариант…")}" data-preference="${escape(choice.id)}" data-campaign-id="${escape(world.id)}">${escape(state.choices[world.id]?.[choice.id] || "")}</textarea></fieldset>`;
+    }
     if (choice.type === "scale") {
       const value = state.choices[world.id]?.[choice.id];
       const id = `pref-${world.id}-${choice.id}-${location}`;
@@ -125,14 +142,16 @@
   }
 
   function bindPreferences(root) {
-    root.querySelectorAll("input[data-preference]").forEach(input => {
+    root.querySelectorAll("[data-preference]").forEach(input => {
       const onAnswer = () => {
         const world = campaigns.find(item => item.id === input.dataset.campaignId);
         const choice = world?.choices.find(item => item.id === input.dataset.preference);
         if (!choice) return;
         const editingReminder = input.closest("[data-reminder-world]");
         if (!state.choices[world.id] || typeof state.choices[world.id] !== "object") state.choices[world.id] = {};
-        if (choice.type === "scale") {
+        if (choice.type === "text") {
+          state.choices[world.id][choice.id] = input.value.slice(0,1000);
+        } else if (choice.type === "scale") {
           if (!/^(10|[1-9])$/.test(input.value)) return;
           state.choices[world.id][choice.id] = input.value;
         } else {
@@ -141,11 +160,13 @@
           if (input.checked) values.add(input.value); else values.delete(input.value);
           state.choices[world.id][choice.id] = [...values];
         }
-        document.querySelectorAll("input[data-preference]").forEach(control => {
+        document.querySelectorAll("[data-preference]").forEach(control => {
           const campaign = campaigns.find(item => item.id === control.dataset.campaignId);
           const question = campaign?.choices.find(item => item.id === control.dataset.preference);
           if (!question) return;
-          if (question.type === "scale") {
+          if (question.type === "text") {
+            if (control !== input) control.value = state.choices[campaign.id]?.[question.id] || "";
+          } else if (question.type === "scale") {
             control.dataset.rated = String(answered(campaign, question));
             control.value = state.choices[campaign.id]?.[question.id] || 5;
             control.setAttribute("aria-valuetext", answerLabel(campaign, question));
@@ -158,11 +179,11 @@
           }
         });
         if (!editingReminder) renderUnansweredQuestions();
-        else editingReminder.querySelector(".confirm-reminder").disabled = ![...editingReminder.querySelectorAll("input[data-preference]")].some(control => control.type === "range" ? control.dataset.rated === "true" : control.checked);
+        else editingReminder.querySelector(".confirm-reminder").disabled = !world.choices.some(question => answered(world, question) && editingReminder.querySelector(`[data-preference="${question.id}"]`));
         invalidateExport();
         save();
       };
-      input.addEventListener(input.type === "range" ? "input" : "change", onAnswer);
+      input.addEventListener(input.type === "range" || input.tagName === "TEXTAREA" ? "input" : "change", onAnswer);
       if (input.type === "range") input.addEventListener("pointerdown", onAnswer);
     });
   }
@@ -178,7 +199,7 @@
     bindPreferences(container);
     container.querySelectorAll(".confirm-reminder").forEach(button => button.addEventListener("click", () => {
       renderUnansweredQuestions();
-      const nextQuestion = container.querySelector("input[data-preference]");
+      const nextQuestion = container.querySelector("[data-preference]");
       (nextQuestion || byId("wishes")).focus();
     }));
   }
@@ -202,11 +223,17 @@
 
   function renderDossier() {
     const root = byId("dossier-content");
-    root.querySelectorAll(".setting-page").forEach(page => page._atmosphereCleanup?.());
+    root.querySelectorAll(".setting-page").forEach(page => { page._atmosphereCleanup?.(); page._sceneCleanup?.(); });
     root.querySelectorAll("*").forEach(element => entranceObserver?.unobserve(element));
     root.replaceChildren();
     for (const world of campaigns) renderWorldDossier(world, root);
     renderUnansweredQuestions();
+  }
+
+  function renderPremise(text) {
+    if (typeof text === "string") return `<p>${escape(text)}</p>`;
+    const parts = (text.parts || []).map(part => typeof part === "string" ? escape(part) : `<span class="redacted-text" role="img" aria-label="Засекречено"><span aria-hidden="true">${escape(part.redacted)}</span></span>`).join("");
+    return `<p>${parts}</p>`;
   }
 
   function renderWorldDossier(world, root) {
@@ -218,6 +245,7 @@
     const allArt = world.atmosphereArt || [];
     const primaryArt = allArt.length ? [allArt[Math.min(2, allArt.length - 1)]] : [];
     const additionalArt = allArt;
+    const scrollScenes = world.scrollBackgrounds || [];
     const poster = world.backgroundPoster || { src: world.cover, alt: world.coverAlt, credit: world.credit, url: world.creditUrl };
     const content = document.createElement("article");
     content.className = "setting-page";
@@ -228,23 +256,24 @@
     content.innerHTML = `
       <div class="dossier-visual">
         <img class="dossier-art" src="${escape(poster.src)}" alt="${escape(poster.alt)}" width="1200" height="480" loading="lazy">
-        ${world.backgroundVideo ? `<video class="atmosphere-video" loop muted playsinline preload="none" poster="${escape(poster.src)}" aria-hidden="true" tabindex="-1"><source src="${escape(world.backgroundVideo)}" type="video/mp4"></video><button type="button" class="video-toggle" aria-pressed="false">Включить атмосферу</button>` : ""}
+        ${world.backgroundVideo ? `<video class="atmosphere-video" autoplay loop muted playsinline preload="metadata" poster="${escape(poster.src)}" aria-hidden="true" tabindex="-1"><source src="${escape(world.backgroundVideo)}" type="video/mp4"></video><button type="button" class="video-toggle" aria-pressed="false">Включить атмосферу</button>` : ""}
         <div class="hero-shade" aria-hidden="true"></div>
         <div class="dossier-title-row wrap"><h2 id="title-${world.id}">${escape(world.title)}</h2>${world.id === "anomalies" ? `<div class="redaction-marks" aria-hidden="true"><span>СЛУЖЕБНАЯ ИНФОРМАЦИЯ</span><span>ДОСТУП ОГРАНИЧЕН</span></div>` : ""}${world.id === "vampire" ? `<div class="blood-drips" aria-hidden="true"><i></i><i></i><i></i><i></i></div>` : ""}</div>
       </div>
       <div class="setting-body wrap">
       <p class="art-caption">${externalLink(poster.url, poster.credit || "Материалы для обсуждения")}${world.videoSources?.length ? ` · Видео: ${world.videoSources.map(source => externalLink(source.url, source.title)).join(" / ")}` : world.videoCredit ? ` · Видео: ${externalLink(world.videoCreditUrl, world.videoCredit)}` : ""}</p>
       <div class="dossier-chapters">
-        <div class="dossier-reading">
+        <div class="dossier-reading${scrollScenes.length ? " has-scroll-scenes" : ""}">
+          ${scrollScenes.length ? `<div class="scroll-scenes" aria-hidden="true"><div class="scroll-scene-sticky">${scrollScenes.map((art,index) => `<img class="scroll-scene${index === 0 ? " is-active" : ""}" src="${escape(art.src)}" alt="" width="${Number(art.width)||1200}" height="${Number(art.height)||800}" loading="lazy">`).join("")}</div></div>` : ""}
           ${primaryArt.map(art => `<img class="reading-backdrop" src="${escape(art.src)}" alt="" width="${Number(art.width)||1200}" height="${Number(art.height)||800}" loading="lazy" aria-hidden="true">`).join("")}
           <div class="reading-shade" aria-hidden="true"></div>
           <div class="world-copy">
-            <section class="dossier-block world-description"><h3>О мире</h3>${world.premise.map((text) => `<p>${escape(text)}</p>`).join("")}${worldChoices.map(choice => renderChoice(world, choice)).join("")}${world.bureaus ? `<dl class="bureau-list">${world.bureaus.map(bureau => `<div><dt>${escape(bureau.title)}</dt><dd>${escape(bureau.description)}</dd></div>`).join("")}</dl>` : ""}${bureauChoice ? `<div class="bureau-inline">${renderChoice(world, bureauChoice)}</div>` : ""}</section>
+            <section class="dossier-block world-description"><h3>О мире</h3>${world.premise.map(renderPremise).join("")}${worldChoices.map(choice => renderChoice(world, choice)).join("")}${world.bureaus ? `<dl class="bureau-list">${world.bureaus.map(bureau => `<div><dt>${escape(bureau.title)}</dt><dd>${escape(bureau.description)}</dd></div>`).join("")}</dl>` : ""}${bureauChoice ? `<div class="bureau-inline">${renderChoice(world, bureauChoice)}</div>` : ""}</section>
             ${cityChoices.length ? `<section class="dossier-block city-chapter" aria-label="Выбор города">${cityChoices.map(choice => renderChoice(world, choice)).join("")}</section>` : ""}
             <section class="dossier-block story-chapter"><h3>Ваша история</h3>${world.story || !storyChoices.length ? `<p>${escape(world.story || "—")}</p>` : ""}${storyChoices.map(choice => renderChoice(world, choice)).join("")}</section>
             ${otherChoices.length ? `<section class="preferences" aria-label="Пожелания к миру">${otherChoices.map((choice) => renderChoice(world, choice)).join("")}</section>` : ""}
           </div>
-          ${primaryArt.length ? `<p class="scene-credit">${externalLink(primaryArt[0].url, primaryArt[0].credit)}</p>` : ""}
+          ${scrollScenes.length || primaryArt.length ? `<p class="scene-credit">${externalLink((scrollScenes[0] || primaryArt[0]).url, (scrollScenes[0] || primaryArt[0]).credit)}</p>` : ""}
         </div>
         ${additionalArt.length ? `<div class="additional-art" aria-label="Иллюстрации мира">${additionalArt.map((art,index) => renderAtmosphereArt(art, index === 0 ? "art-feature" : "")).join("")}</div>` : ""}
         ${renderMaterials(world)}
@@ -254,6 +283,7 @@
         <section class="references-block"><h3>Поймать настроение</h3><ul class="ref-list">${world.references.map((item) => `<li>${externalLink(item.url, item.title)}</li>`).join("")}</ul></section>
       </div></div>`;
     setupAtmosphere(content);
+    setupScrollScenes(content, scrollScenes);
     observeEntrances(content);
     bindPreferences(content);
     content.querySelectorAll(".material-image img").forEach((image) => image.addEventListener("error", () => {
@@ -264,6 +294,34 @@
     }, { once: true }));
   }
 
+  function setupScrollScenes(content, artworks) {
+    if (!artworks.length) return;
+    const stage = content.querySelector(".has-scroll-scenes");
+    const scenes = [...stage.querySelectorAll(".scroll-scene")];
+    const preference = matchMedia("(prefers-reduced-motion: reduce)");
+    let frame = 0;
+    let active = -1;
+    const update = () => {
+      frame = 0;
+      const rect = stage.getBoundingClientRect();
+      const distance = Math.max(1, rect.height - innerHeight);
+      const progress = Math.max(0, Math.min(1, -rect.top / distance));
+      const index = preference.matches ? 0 : Math.min(scenes.length - 1, Math.floor(progress * scenes.length));
+      if (index === active) return;
+      active = index;
+      stage.dataset.activeScene = String(index);
+      scenes.forEach((scene,i) => scene.classList.toggle("is-active",i === index));
+      const art = artworks[index];
+      stage.querySelector(".scene-credit").innerHTML = externalLink(art.url,art.credit);
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    window.addEventListener("scroll",schedule,{passive:true});
+    window.addEventListener("resize",schedule,{passive:true});
+    preference.addEventListener("change",schedule);
+    update();
+    content._sceneCleanup = () => { window.removeEventListener("scroll",schedule); window.removeEventListener("resize",schedule); preference.removeEventListener("change",schedule); cancelAnimationFrame(frame); };
+  }
+
   function setupAtmosphere(content) {
     const video = content.querySelector(".atmosphere-video");
     const button = content.querySelector(".video-toggle");
@@ -271,6 +329,8 @@
     let requested = false;
     let visible = false;
     video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
     const label = () => {
       button.textContent = video.paused ? "Включить атмосферу" : "Пауза видео";
       button.setAttribute("aria-pressed", String(!video.paused));
@@ -291,13 +351,15 @@
     });
     video.addEventListener("playing", () => { video.classList.add("is-playing"); label(); });
     video.addEventListener("pause", label);
-    const canAutoplay = !matchMedia("(prefers-reduced-motion: reduce)").matches && !navigator.connection?.saveData && matchMedia("(min-width: 900px)").matches;
+    const canAutoplay = !matchMedia("(prefers-reduced-motion: reduce)").matches;
     requested = canAutoplay;
+    video.autoplay = canAutoplay;
+    if (!canAutoplay) video.pause();
     const observer = new IntersectionObserver(entries => {
       if (!video.isConnected) { observer.disconnect(); return; }
       visible = entries[0].isIntersecting;
       if (visible && requested && !document.hidden) play(); else video.pause();
-    }, { threshold: 0.35 });
+    }, { threshold: 0.05 });
     observer.observe(video);
     // The listener is scoped to this rendered dossier and removed on the next switch.
     content._atmosphereCleanup?.();
@@ -489,6 +551,8 @@
   });
 
   observeEntrances(document);
+  requestAnimationFrame(restoreOpening);
+  document.fonts.ready.then(restoreOpening);
   const deepLinkedChapter = byId(location.hash === "#dossier" && requestedWorld ? `dossier-${state.active}` : location.hash.slice(1));
   if (deepLinkedChapter?.classList.contains("setting-page")) requestAnimationFrame(() => deepLinkedChapter.scrollIntoView({behavior:"instant"}));
 })();

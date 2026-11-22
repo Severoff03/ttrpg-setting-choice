@@ -14,6 +14,10 @@ window.CAMPAIGNS.push({
   hook: "Вчера этой двери не было. Сегодня за ней пропала ваша смена.",
   premise: [
     "Мир полон загадочных существ и тварей. Многие из них достаточно опасны, чтобы угрожать жизни людей и привычному порядку вещей.",
+    { parts: ["Аномалии могут выглядеть как обычные предметы, занимать целые здания или существовать только при определённых условиях. Иногда достаточно услышать ", { redacted: "запись из закрытого архива" }, ", чтобы привычные правила перестали работать. Не всё, что кажется живым, является существом. Не всё, что неподвижно, безопасно."] },
+    { parts: ["Большинство людей никогда не узнает, что произошло на самом деле. В новостях останется авария, утечка газа или оцепление из-за учений. Настоящие отчёты поступят в ", { redacted: "управление внутренних расследований" }, ", а имена свидетелей будут заменены номерами дел."] },
+    { parts: ["Сотрудники Фонда получают сведения по уровню допуска. В документах можно найти инструкции по работе с объектом, но не обязательно объяснение, откуда он появился. Сведения о ", { redacted: "происхождении отдельных аномалий" }, " и результаты ", { redacted: "последней исследовательской программы" }, " доступны лишь части персонала."] },
+    { parts: ["Некоторые дела возвращаются в архив с пометкой о прекращении наблюдения. ", { redacted: "Местонахождение объекта после инцидента не установлено." }, " Для остальных сотрудников действует только обновлённый протокол: не входить в контакт, не повторять услышанное и ждать распоряжений ", { redacted: "ответственного координатора операции" }, "."] },
     "Для обнаружения и изоляции аномалий, их содержания и защиты людей была основана SCP Foundation. Внутри Фонда работают три бюро, каждое из которых отвечает за свою сторону работы с аномалиями.",
   ],
   bureaus: [
@@ -57,13 +61,12 @@ window.CAMPAIGNS.push({
     { title: "SCP: OVERLORD", url: "https://www.youtube.com/watch?v=EOxarwd3eTs" },
     { title: "SCP: Dollhouse", url: "https://www.youtube.com/watch?v=xVx2jyDPinw" },
   ],
-  atmosphereArt: [
+  scrollBackgrounds: [
     { src: "settings/anomalies/images/scp-selected-floating.png", width: 600, height: 337, alt: "Парящие фигуры в аномальном пространстве Control, изображение выбранное ведущим", credit: "Control · Remedy Entertainment", url: "https://store.steampowered.com/app/870780/" },
     { src: "settings/anomalies/images/scp-selected-space.png", width: 600, height: 337, alt: "Искажённое пространство Control, изображение выбранное ведущим", credit: "Control · Remedy Entertainment", url: "https://store.steampowered.com/app/870780/" },
     { src: "settings/anomalies/images/scp-selected-creature.png", width: 1546, height: 987, alt: "Высокое существо с прямоугольной головой в туманном лесу, изображение предоставлено ведущим", credit: "Изображение ведущего · автор не установлен", url: "" },
-    { src: "settings/anomalies/images/control-creature.jpg", width: 1920, height: 1080, alt: "Нечеловеческое существо в тёмном помещении из Control", credit: "Control · Remedy Entertainment", url: "https://store.steampowered.com/app/870780/" },
-    { src: "settings/anomalies/images/control-hiss-entity.jpg", width: 1920, height: 1080, alt: "Красная парящая сущность среди обломков из Control", credit: "Control · Remedy Entertainment", url: "https://store.steampowered.com/app/870780/" },
   ],
+  atmosphereArt: [],
   images: [],
   // Пример видео: { src: "settings/anomalies/videos/trailer.mp4", title: "Настроение игры", poster: "settings/anomalies/images/poster.jpg" }
   videos: [],
