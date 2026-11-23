@@ -9,13 +9,13 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css?v=c5eba6a68e">
   <link rel="stylesheet" href="assets/fonts/settings-fonts.css?v=5baf0ed14a">
-  <link rel="stylesheet" href="immersive.css?v=bb7992c40f">
+  <link rel="stylesheet" href="immersive.css?v=e7e435cd4b">
   <link rel="preload" href="assets/fonts/Onest-Variable.ttf" as="font" type="font/ttf" crossorigin>
   <script src="site.config.js?v=68a5680077" defer></script>
   <script src="settings/anomalies/setting.js?v=44ac4ef236" defer></script>
   <script src="settings/urban-fantasy/setting.js?v=61e4d1903d" defer></script>
   <script src="settings/vampire/setting.js?v=bd96a815c8" defer></script>
-  <script src="app.js?v=29d6f7dac8" defer></script>
+  <script src="app.js?v=cf80981804" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">К содержимому</a>
@@ -82,6 +82,22 @@
     </section>
     <noscript><p class="wrap">Для досье и анкеты нужен JavaScript. Откройте сайт с включённым JavaScript; тексты миров также доступны в папке settings.</p></noscript>
   </main>
+
+  <dialog id="art-viewer" class="art-viewer" aria-labelledby="art-viewer-title" data-ui>
+    <div class="art-viewer-toolbar">
+      <h2 id="art-viewer-title">Иллюстрации</h2>
+      <button type="button" id="art-viewer-close">Закрыть</button>
+    </div>
+    <div class="art-viewer-picture"><img id="art-viewer-image" alt=""><div id="art-viewer-error" hidden role="status"><p>Не удалось загрузить изображение.</p><button type="button" id="art-viewer-retry">Повторить</button></div></div>
+    <div class="art-viewer-bottom">
+      <p id="art-viewer-credit"></p>
+      <nav aria-label="Просмотр иллюстраций">
+        <button type="button" id="art-viewer-prev" aria-label="Предыдущая иллюстрация">Назад</button>
+        <output id="art-viewer-index" aria-live="polite" aria-atomic="true"></output>
+        <button type="button" id="art-viewer-next" aria-label="Следующая иллюстрация">Дальше</button>
+      </nav>
+    </div>
+  </dialog>
 
   <footer class="site-footer wrap">
     <div><a href="materials.html">Материалы для отбора</a><a href="CREDITS.md">Источники</a></div>

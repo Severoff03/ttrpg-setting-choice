@@ -216,9 +216,62 @@
     }));
   }
 
-  function renderAtmosphereArt(art, className = "") {
+  function renderAtmosphereArt(art, className = "", worldId = "") {
     if (!art) return "";
-    return `<figure class="chapter-art ${escape(className)}"><a class="art-open" href="${escape(art.src)}" target="_blank" rel="noopener noreferrer" aria-label="Рассмотреть иллюстрацию: ${escape(art.alt)} (в новой вкладке)"><img src="${escape(art.src)}" alt="${escape(art.alt)}" width="${Number(art.width) || 960}" height="${Number(art.height) || 540}" loading="lazy"></a><figcaption>${externalLink(art.url, art.credit)}</figcaption></figure>`;
+    return `<figure class="chapter-art ${escape(className)}"><a class="art-open" data-art-world="${escape(worldId)}" href="${escape(art.src)}" target="_blank" rel="noopener noreferrer" aria-label="Рассмотреть иллюстрацию: ${escape(art.alt)}"><img src="${escape(art.src)}" alt="${escape(art.alt)}" width="${Number(art.width) || 960}" height="${Number(art.height) || 540}" loading="lazy"></a><figcaption>${externalLink(art.url, art.credit)}</figcaption></figure>`;
+  }
+
+  function setupArtViewer() {
+    const dialog = byId("art-viewer");
+    if (!dialog || typeof dialog.showModal !== "function") return;
+    const image = byId("art-viewer-image");
+    let gallery = [], current = 0, opener = null, backdropPressed = false;
+    const showImage = () => {
+      const art = gallery[current];
+      image.hidden = false;
+      byId("art-viewer-error").hidden = true;
+      image.parentElement.setAttribute("aria-busy","true");
+      image.src = art.src;
+      image.alt = art.alt || "Иллюстрация мира";
+      image.width = Number(art.width) || 1200;
+      image.height = Number(art.height) || 800;
+      byId("art-viewer-credit").innerHTML = externalLink(art.url, art.credit || "");
+      byId("art-viewer-index").textContent = `${current + 1} из ${gallery.length}`;
+      byId("art-viewer-prev").hidden = byId("art-viewer-next").hidden = gallery.length < 2;
+    };
+    const step = direction => { current = (current + direction + gallery.length) % gallery.length; showImage(); };
+    image.addEventListener("load", () => image.parentElement.removeAttribute("aria-busy"));
+    image.addEventListener("error", () => { image.hidden = true; byId("art-viewer-error").hidden = false; image.parentElement.removeAttribute("aria-busy"); });
+    byId("art-viewer-retry").addEventListener("click", showImage);
+    document.addEventListener("click", event => {
+      const link = event.target.closest("[data-art-world]");
+      if (!link || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      const world = campaigns.find(world => world.id === link.dataset.artWorld);
+      if (!world) return;
+      gallery = [...(world.scrollBackgrounds || []), ...(world.atmosphereArt || [])].filter((art,index,all) => all.findIndex(item => item.src === art.src) === index);
+      current = gallery.findIndex(art => art.src === link.getAttribute("href"));
+      if (current < 0) return;
+      event.preventDefault();
+      opener = link;
+      byId("art-viewer-title").textContent = world.title;
+      showImage();
+      document.documentElement.classList.add("art-viewer-open");
+      dialog.showModal();
+    });
+    byId("art-viewer-close").addEventListener("click", () => dialog.close());
+    byId("art-viewer-prev").addEventListener("click", () => step(-1));
+    byId("art-viewer-next").addEventListener("click", () => step(1));
+    dialog.addEventListener("keydown", event => {
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") { event.preventDefault(); step(event.key === "ArrowLeft" ? -1 : 1); }
+    });
+    const outside = event => { const bounds = dialog.getBoundingClientRect(); return event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom; };
+    dialog.addEventListener("pointerdown", event => { backdropPressed = event.target === dialog && outside(event); });
+    dialog.addEventListener("click", event => { if (backdropPressed && event.target === dialog && outside(event)) dialog.close(); backdropPressed = false; });
+    dialog.addEventListener("close", () => {
+      document.documentElement.classList.remove("art-viewer-open");
+      if (opener?.isConnected) opener.focus({preventScroll:true});
+    });
   }
 
   function renderMaterials(world) {
@@ -261,7 +314,7 @@
     const sceneInterlude = index => {
       const art = scrollScenes[index];
       if (!art) return "";
-      return `<figure class="scene-interlude"><img src="${escape(art.src)}" alt="${escape(art.alt)}" width="${Number(art.width)||1200}" height="${Number(art.height)||800}" loading="lazy" decoding="async"><figcaption>${externalLink(art.url, art.credit)}</figcaption></figure>`;
+      return `<figure class="scene-interlude"><a class="art-open" data-art-world="${escape(world.id)}" href="${escape(art.src)}" target="_blank" rel="noopener noreferrer" aria-label="Рассмотреть иллюстрацию: ${escape(art.alt)}"><img src="${escape(art.src)}" alt="${escape(art.alt)}" width="${Number(art.width)||1200}" height="${Number(art.height)||800}" loading="lazy" decoding="async"></a><figcaption>${externalLink(art.url, art.credit)}</figcaption></figure>`;
     };
     const poster = world.backgroundPoster || { src: world.cover, alt: world.coverAlt, credit: world.credit, url: world.creditUrl };
     const content = document.createElement("article");
@@ -284,6 +337,7 @@
           ${scrollScenes.length ? `<div class="scroll-scenes" aria-hidden="true"><div class="scroll-scene-sticky">${scrollScenes.map((art,index) => `<img class="scroll-scene${index === 0 ? " is-active" : ""}" src="${escape(art.src)}" alt="" width="${Number(art.width)||1200}" height="${Number(art.height)||800}" loading="lazy">`).join("")}</div></div>` : ""}
           ${primaryArt.map(art => `<img class="reading-backdrop" src="${escape(art.src)}" alt="" width="${Number(art.width)||1200}" height="${Number(art.height)||800}" loading="lazy" aria-hidden="true">`).join("")}
           <div class="reading-shade" aria-hidden="true"></div>
+          ${scrollScenes.length ? `<div class="scene-tools"><div class="scene-tools-sticky"><a class="scene-expand" data-art-world="${escape(world.id)}" href="${escape(scrollScenes[0].src)}" target="_blank" rel="noopener noreferrer">Рассмотреть</a></div></div>` : ""}
           <div class="world-copy">
             <section class="dossier-block world-description"><h3>О мире</h3>${world.premise.map((text,index) => renderPremise(text) + (index === Math.min(1,world.premise.length - 1) ? sceneInterlude(0) : "")).join("")}${sceneInterlude(1)}${worldChoices.map(choice => renderChoice(world, choice)).join("")}${world.bureaus ? `<dl class="bureau-list">${world.bureaus.map(bureau => `<div><dt>${escape(bureau.title)}</dt><dd>${escape(bureau.description)}</dd></div>`).join("")}</dl>` : ""}${bureauChoice ? `<div class="bureau-inline">${renderChoice(world, bureauChoice)}</div>` : ""}${sceneInterlude(2)}</section>
             ${cityChoices.length ? `<section class="dossier-block city-chapter" aria-label="Выбор города">${cityChoices.map(choice => renderChoice(world, choice)).join("")}</section>` : ""}
@@ -292,7 +346,7 @@
           </div>
           ${scrollScenes.length || primaryArt.length ? `<p class="scene-credit">${externalLink((scrollScenes[0] || primaryArt[0]).url, (scrollScenes[0] || primaryArt[0]).credit)}</p>` : ""}
         </div>
-        ${additionalArt.length ? `<div class="additional-art" aria-label="Иллюстрации мира">${additionalArt.map((art,index) => renderAtmosphereArt(art, index === 0 ? "art-feature" : "")).join("")}</div>` : ""}
+        ${additionalArt.length ? `<div class="additional-art" aria-label="Иллюстрации мира">${additionalArt.map((art,index) => renderAtmosphereArt(art, index === 0 ? "art-feature" : "",world.id)).join("")}</div>` : ""}
         ${renderMaterials(world)}
       </div>
       <div class="dossier-end">
@@ -330,6 +384,9 @@
       scenes.forEach((scene,i) => scene.classList.toggle("is-active",i === index));
       const art = artworks[index];
       stage.querySelector(".scene-credit").innerHTML = externalLink(art.url,art.credit);
+      const opener = stage.querySelector(".scene-expand");
+      opener.setAttribute("href",art.src);
+      opener.setAttribute("aria-label",`Рассмотреть иллюстрацию: ${art.alt}`);
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
     window.addEventListener("scroll",schedule,{passive:true});
@@ -573,6 +630,7 @@
   renderDossier();
   renderInterest();
   restoreForm();
+  setupArtViewer();
   setupExternalForm();
   save();
 
