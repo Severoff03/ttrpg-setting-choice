@@ -5,6 +5,7 @@
   font-display:swap
 }
 :root {
+  --validation-error:#ffb3a7;
   color-scheme:dark;
   --bg:#121617;
   --surface:#1b2021;
@@ -21,6 +22,10 @@
   font-synthesis:none;
   scroll-padding-top:24px
 }
+.setting-page:not([data-setting=vampire]) {--validation-error:#922d25}
+.validation-invalid {outline:2px solid var(--validation-error);outline-offset:8px}
+.field-error {color:var(--validation-error)!important;font-size:14px;line-height:1.5;margin:10px 0 0}
+.rating-row > .field-error {grid-column:1/-1}
 * {
   box-sizing:border-box
 }

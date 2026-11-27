@@ -7,7 +7,7 @@
   <meta name="description" content="Три мира для нашей следующей настольной ролевой игры. Прочитайте завязки, выберите атмосферу и расскажите, во что хочется сыграть.">
   <title>Выбор сеттинга — SCP, Wolf Among Us, Vampire</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=c5eba6a68e">
+  <link rel="stylesheet" href="styles.css?v=964474c96a">
   <link rel="stylesheet" href="assets/fonts/settings-fonts.css?v=5baf0ed14a">
   <link rel="stylesheet" href="immersive.css?v=e7e435cd4b">
   <link rel="preload" href="assets/fonts/Onest-Variable.ttf" as="font" type="font/ttf" crossorigin>
@@ -15,7 +15,7 @@
   <script src="settings/anomalies/setting.js?v=44ac4ef236" defer></script>
   <script src="settings/urban-fantasy/setting.js?v=61e4d1903d" defer></script>
   <script src="settings/vampire/setting.js?v=bd96a815c8" defer></script>
-  <script src="app.js?v=cf80981804" defer></script>
+  <script src="app.js?v=af5e077e97" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">К содержимому</a>
@@ -42,8 +42,9 @@
     <section id="vote" class="vote-section wrap" aria-labelledby="vote-title">
       <div class="vote-intro">
         <h2 id="vote-title">Ваш выбор</h2>
+        <p id="required-note" class="field-help">Все поля обязательны.</p>
       </div>
-      <form id="feedback-form" class="feedback-form">
+      <form id="feedback-form" class="feedback-form" novalidate aria-describedby="required-note">
         <div class="field">
           <label for="player-name">Как к вам обращаться <span class="secondary">(обязательно)</span></label>
           <input id="player-name" name="playerName" autocomplete="nickname" maxlength="60" placeholder="Имя или ник…" required>
@@ -57,11 +58,11 @@
         <p id="questions-confirmation" class="sr-only" role="status" aria-live="polite" hidden></p>
         <div class="field">
           <label for="wishes">Что особенно хочется увидеть?</label>
-          <textarea id="wishes" name="wishes" rows="3" maxlength="3000" placeholder="Сцены, персонажи, любимые референсы…"></textarea>
+          <textarea id="wishes" name="wishes" rows="3" maxlength="3000" placeholder="Сцены, персонажи, любимые референсы…" required></textarea>
         </div>
         <div class="field">
           <label for="boundaries">Что лучше оставить за кадром?</label>
-          <textarea id="boundaries" name="boundaries" rows="3" maxlength="3000" placeholder="Темы, сцены, ограничения…"></textarea>
+          <textarea id="boundaries" name="boundaries" rows="3" maxlength="3000" placeholder="Темы, сцены, ограничения…" required></textarea>
         </div>
         <div class="form-actions">
           <button type="submit" class="button primary">Отправить ответ</button>

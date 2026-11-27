@@ -40,6 +40,7 @@
   let clearPending = false;
   let clearTimer;
   let exportRevision = 0;
+  let validationAttempted = false;
   const entranceObserver = "IntersectionObserver" in window ? new IntersectionObserver(entries => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
@@ -128,7 +129,7 @@
   }
 
   function choiceNote(selected) {
-    if (!selected.length) return "Можно оставить без выбора — решим вместе.";
+    if (!selected.length) return "Выберите хотя бы один вариант. Можно отметить несколько.";
     if (selected.length === 1) return selected[0].note;
     return `Подходят: ${selected.map(option => option.label).join("; ")}.`;
   }
@@ -136,12 +137,12 @@
   function renderChoice(world, choice, location = "dossier") {
     if (choice.type === "text") {
       const id = `pref-${world.id}-${choice.id}-${location}`;
-      return `<fieldset class="choice-group text-choice" data-ui><legend><label for="${id}">${escape(choice.label)}</label></legend><textarea id="${id}" name="${id}" rows="3" maxlength="1000" placeholder="${escape(choice.placeholder || "Ваш вариант…")}" data-preference="${escape(choice.id)}" data-campaign-id="${escape(world.id)}">${escape(state.choices[world.id]?.[choice.id] || "")}</textarea></fieldset>`;
+      return `<fieldset class="choice-group text-choice" data-ui><legend><label for="${id}">${escape(choice.label)}</label></legend><textarea id="${id}" name="${id}" rows="3" maxlength="1000" placeholder="${escape(choice.placeholder || "Ваш вариант…")}" data-preference="${escape(choice.id)}" data-campaign-id="${escape(world.id)}" required>${escape(state.choices[world.id]?.[choice.id] || "")}</textarea></fieldset>`;
     }
     if (choice.type === "scale") {
       const value = state.choices[world.id]?.[choice.id];
       const id = `pref-${world.id}-${choice.id}-${location}`;
-      return `<fieldset class="choice-group tone-choice" data-ui><legend><label for="${id}">${escape(choice.label)}</label></legend><div class="tone-endpoints"><span>${escape(choice.minLabel)}</span><output for="${id}" id="output-${id}">${answered(world, choice) ? value + " / 10" : "—"}</output><span>${escape(choice.maxLabel)}</span></div><input type="range" id="${id}" name="${id}" min="1" max="10" step="1" value="${answered(world, choice) ? value : 5}" data-rated="${answered(world, choice)}" data-preference="${escape(choice.id)}" data-campaign-id="${escape(world.id)}" aria-valuetext="${answered(world, choice) ? escape(answerLabel(world, choice)) : "Оценка не выбрана"}"><div class="scale-ticks" aria-hidden="true">${Array.from({length:10},(_,i)=>`<span>${i+1}</span>`).join("")}</div></fieldset>`;
+      return `<fieldset class="choice-group tone-choice" data-ui><legend><label for="${id}">${escape(choice.label)}</label></legend><div class="tone-endpoints"><span>${escape(choice.minLabel)}</span><output for="${id}" id="output-${id}">${answered(world, choice) ? value + " / 10" : "—"}</output><span>${escape(choice.maxLabel)}</span></div><input type="range" id="${id}" name="${id}" min="1" max="10" step="1" value="${answered(world, choice) ? value : 5}" data-rated="${answered(world, choice)}" data-preference="${escape(choice.id)}" data-campaign-id="${escape(world.id)}" aria-required="true" aria-valuetext="${answered(world, choice) ? escape(answerLabel(world, choice)) : "Оценка не выбрана"}"><div class="scale-ticks" aria-hidden="true">${Array.from({length:10},(_,i)=>`<span>${i+1}</span>`).join("")}</div></fieldset>`;
     }
     const selected = selectedOptions(world, choice);
     const noteId = `note-${world.id}-${choice.id}-${location}`;
@@ -194,6 +195,7 @@
         else editingReminder.querySelector(".confirm-reminder").disabled = !world.choices.some(question => answered(world, question) && editingReminder.querySelector(`[data-preference="${question.id}"]`));
         invalidateExport();
         save();
+        refreshRequiredState();
       };
       input.addEventListener(input.type === "range" || input.tagName === "TEXTAREA" ? "input" : "change", onAnswer);
       if (input.type === "range") input.addEventListener("pointerdown", onAnswer);
@@ -214,6 +216,7 @@
       const nextQuestion = container.querySelector("[data-preference]");
       (nextQuestion || byId("wishes")).focus();
     }));
+    refreshRequiredState();
   }
 
   function renderAtmosphereArt(art, className = "", worldId = "") {
@@ -451,7 +454,7 @@
         <img class="rating-image" src="${escape(world.cover)}" alt="" width="80" height="100" loading="lazy">
         <div class="rating-controls">
         <div class="rating-heading"><label for="interest-${escape(world.id)}">${escape(world.title)}</label><span><output id="score-${escape(world.id)}" for="interest-${escape(world.id)}">—</output> / 10</span></div>
-        <input type="range" id="interest-${escape(world.id)}" name="interest-${escape(world.id)}" min="1" max="10" step="1" value="5" data-rated="false" aria-valuetext="Оценка не выбрана" aria-describedby="scale-help">
+        <input type="range" id="interest-${escape(world.id)}" name="interest-${escape(world.id)}" min="1" max="10" step="1" value="5" data-rated="false" aria-required="true" aria-valuetext="Оценка не выбрана" aria-describedby="scale-help">
         <div class="scale-ticks" aria-hidden="true">${Array.from({ length: 10 }, (_, index) => `<span>${index + 1}</span>`).join("")}</div>
         </div>
       </div>`).join("");
@@ -496,6 +499,7 @@
     state.form = formValues();
     invalidateExport();
     save();
+    refreshRequiredState();
   }
 
   function invalidateExport() {
@@ -518,14 +522,49 @@
     return lines.join("\n");
   }
 
+  function refreshRequiredState() {
+    const validateGroup = (container, controls, valid, message) => {
+      if (!container || !controls.length) return;
+      const errorId = `validation-${controls[0].id || controls[0].name}`;
+      let error = container.querySelector(".field-error");
+      if (!error) { error = document.createElement("p"); error.className = "field-error"; error.id = errorId; container.append(error); }
+      error.textContent = message;
+      error.hidden = !validationAttempted || valid;
+      container.classList.toggle("validation-invalid", validationAttempted && !valid);
+      controls.forEach((control,index) => {
+        control.setCustomValidity(index === 0 && !valid ? message : "");
+        if (validationAttempted && !valid) control.setAttribute("aria-invalid","true"); else control.removeAttribute("aria-invalid");
+        const descriptions = new Set((control.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean));
+        descriptions.add(errorId);
+        control.setAttribute("aria-describedby",[...descriptions].join(" "));
+      });
+    };
+    for (const [id,message] of [["player-name","Укажите имя или ник."],["wishes","Напишите свои пожелания. Если их нет, укажите «Нет»."],["boundaries","Укажите ограничения. Если их нет, напишите «Нет»."]]) {
+      const control = byId(id);
+      validateGroup(control.closest(".field"),[control],Boolean(control.value.trim()),message);
+    }
+    byId("interest-list").querySelectorAll('input[type="range"]').forEach(control => {
+      validateGroup(control.closest(".rating-row"),[control],control.dataset.rated === "true" && /^(10|[1-9])$/.test(control.value),"Оцените интерес к этому миру от 1 до 10.");
+    });
+    document.querySelectorAll(".choice-group").forEach(group => {
+      const controls = [...group.querySelectorAll("[data-preference]")];
+      const world = campaigns.find(world => world.id === controls[0]?.dataset.campaignId);
+      const choice = world?.choices.find(choice => choice.id === controls[0]?.dataset.preference);
+      if (!choice) return;
+      const message = choice.type === "text" ? "Напишите свой вариант." : choice.type === "scale" ? "Выберите оценку от 1 до 10." : "Выберите хотя бы один вариант.";
+      validateGroup(group,controls,answered(world,choice),message);
+    });
+  }
+
   function validForm() {
-    const name = byId("player-name");
-    name.setCustomValidity(name.value.trim() ? "" : "Укажите имя или ник.");
-    return form.reportValidity();
+    validationAttempted = true;
+    refreshRequiredState();
+    const valid = form.reportValidity();
+    if (!valid) byId("form-status").textContent = "Заполните все обязательные поля.";
+    return valid;
   }
 
   form.addEventListener("input", () => {
-    byId("player-name").setCustomValidity("");
     captureForm();
   });
   form.addEventListener("change", captureForm);
@@ -603,6 +642,7 @@
     }
     clearTimeout(clearTimer);
     clearPending = false;
+    validationAttempted = false;
     state = freshState();
     form.reset();
     renderInterest();
@@ -630,6 +670,7 @@
   renderDossier();
   renderInterest();
   restoreForm();
+  refreshRequiredState();
   setupArtViewer();
   setupExternalForm();
   save();
